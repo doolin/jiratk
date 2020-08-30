@@ -44,3 +44,6 @@ def project_list
   end
 end
 project_list
+
+# Next up: push the issues up to S3, need to terraform a new bucket.
+# Athena after S3 is working working.
