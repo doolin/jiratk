@@ -4,6 +4,7 @@ require 'pp'
 require 'pry'
 require 'rest-client'
 require 'json'
+require 'aws-sdk-s3'
 
 require_relative 'lib/account_manager'
 require_relative 'lib/api_helper'
