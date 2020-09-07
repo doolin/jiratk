@@ -13,6 +13,16 @@ api_keys = AccountManager.new.api_keys
 USERNAME = api_keys[:jira_id]
 PASSWORD = api_keys[:jira_key]
 
+def aws_region
+  ENV['AWS_REGION']
+end
+
+def s3
+  Aws::S3::Client.new(
+    region: aws_region
+  )
+end
+
 
 def list_issues_for(project)
   query = {
@@ -47,3 +57,20 @@ project_list
 
 # Next up: push the issues up to S3, need to terraform a new bucket.
 # Athena after S3 is working working.
+#
+#
+# The following will load the bucket the output of the read on the file.
+s3.put_object(bucket: "inventium-jira", key: "foo", body: File.new('./foo.json').read)
+
+# What we really want to do is stream the json directly from the values returned
+# from Jira. Some questions:
+# 1. Do we want to upload every issue every time?
+# 2. Or would it be better to sync instead?
+#
+# The first thing is to just get the Jira issues copied to S3. Then I can worry
+# about duplicating existing issues.
+#
+# The problem with syncing is that I do not intended to keep a local copy of
+# the Jira issues, so I'm not sure how syncing would work.
+#
+#
