@@ -5,6 +5,7 @@ require 'pry'
 require 'rest-client'
 require 'json'
 require 'aws-sdk-s3'
+require 'csv'
 
 require_relative 'lib/account_manager'
 require_relative 'lib/api_helper'
@@ -18,9 +19,7 @@ def aws_region
 end
 
 def s3
-  Aws::S3::Client.new(
-    region: aws_region
-  )
+  @s3 ||= Aws::S3::Client.new(region: aws_region)
 end
 
 def get_issues_for(project)
@@ -44,7 +43,7 @@ def list_issues_for(project)
     puts issue['key']
   end
 end
-list_issues_for('PLANT')
+# list_issues_for('PLANT')
 
 def project_list
   projects = []
@@ -80,7 +79,27 @@ end
 #
 # Athena after S3 is working working.
 # I think this means turning the json into csv.
-# Some example json
+#
+#
+# Getting json into csv means figuring out which of the json fields we want
+# to extract, then getting those fields extracted.
+# - Do we need headers?
+# - How to deal with commas ',' in fields?
+#
+# At least the following to start:
+# - key
+# - fields::issuetype::name
+# - field::timespent
+# - fields::project::name
+# - fields::resolution::name
+# - fields::assignee::displayName
+
+# Some example json, put this into a fixture file later.
+# Schedule a ticket to periodically update the fixture file
+# from collected issues.
+# TODO: Replace this with a fixture from the TASKLETS project, which will be
+# much more interesting.
+=begin
 plant_5 = {
   "expand": "operations,versionedRepresentations,editmeta,changelog,renderedFields",
   "id": "10005",
@@ -263,3 +282,4 @@ plant_5 = {
     }
   }
 }
+=end
