@@ -59,12 +59,21 @@ def project_list
 end
 
 # Next up: push the issues up to S3, need to terraform a new bucket.
-project_list.each do |project|
-  issues = get_issues_for(project)
-  issues.each do |issue|
-    s3.put_object(bucket: "inventium-jira", key: issue['key'], body: issue.to_json)
+def upload_to_s3
+  project_list.each do |project|
+    issues = get_issues_for(project)
+    issues.each do |issue|
+      s3.put_object(bucket: "inventium-jira", key: issue['key'], body: issue.to_json)
+    end
   end
 end
+
+# Next round of work is writing the files to a local directory
+# for convenience. This will help with generating csvs a lot.
+def write_to_fixtures
+  # write everything to spec/fixtures directory.
+end
+# write_to_fixtures
 
 # What we really want to do is stream the json directly from the values returned
 # from Jira. Some questions:
