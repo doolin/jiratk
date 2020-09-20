@@ -112,4 +112,11 @@ end
 # TODO: Replace this with a fixture from the TASKLETS project, which will be
 # much more interesting.
 require_relative './spec/fixtures/plant_5'
-ap plant
+ap plant[:key]
+ap plant.dig(:fields, :issuetype, :name)
+ap plant.dig(:fields, :project, :name)
+ap plant.dig(:fields, :resolution, :name)
+ap plant.dig(:fields, :assignee, :displayName)
+ap plant.dig(:fields, :status, :statusCategory, :name)
+# description is going to have to have its own processor
+ap plant.dig(:fields, :description, :content)[0][:content][0][:text]
