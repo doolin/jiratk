@@ -1,5 +1,8 @@
+# frozen-string-literal: true
+
 require 'yaml'
 
+# Add class documentation
 class AccountManager
   def api_keys
     @api_keys ||= {

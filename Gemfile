@@ -6,5 +6,6 @@ ruby '2.7.1'
 
 gem 'awesome_print'
 gem 'aws-sdk-s3'
+gem 'pry-nav'
 gem 'rest-client'
 gem 'rubocop'
