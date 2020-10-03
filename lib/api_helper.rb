@@ -1,5 +1,8 @@
+# frozen-string-literal: true
+
 require 'rest-client'
 
+# Add class documentation
 class ApiHelper
   def initialize(api_url)
     @resource = RestClient::Resource.new(
