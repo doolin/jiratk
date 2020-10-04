@@ -111,12 +111,19 @@ end
 # from collected issues.
 # TODO: Replace this with a fixture from the TASKLETS project, which will be
 # much more interesting.
-require_relative './spec/fixtures/plant_5'
-ap plant[:key]
-ap plant.dig(:fields, :issuetype, :name)
-ap plant.dig(:fields, :project, :name)
-ap plant.dig(:fields, :resolution, :name)
-ap plant.dig(:fields, :assignee, :displayName)
-ap plant.dig(:fields, :status, :statusCategory, :name)
-# description is going to have to have its own processor
-ap plant.dig(:fields, :description, :content)[0][:content][0][:text]
+
+# require_relative './spec/fixtures/plant_5'
+# ap plant[:key]
+# ap plant.dig(:fields, :issuetype, :name)
+# ap plant.dig(:fields, :project, :name)
+# ap plant.dig(:fields, :resolution, :name)
+# ap plant.dig(:fields, :assignee, :displayName)
+# ap plant.dig(:fields, :status, :statusCategory, :name)
+# # description is going to have to have its own processor
+# ap plant.dig(:fields, :description, :content)[0][:content][0][:text]
+
+# Post an issue. Note that this works in Postman.
+params = JSON.parse(File.read('./test.json'))
+api_url = 'https://doolin.atlassian.net/rest/api/2/issue/'
+api_helper = ApiHelper.new(api_url)
+_response = api_helper.post(params)
