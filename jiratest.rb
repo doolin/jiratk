@@ -45,8 +45,10 @@ def list_issues_for(project)
   issues.each do |issue|
     puts issue['key']
   end
+  issues
 end
-# list_issues_for('PLANT')
+_issues = list_issues_for('TASKLETS')
+# binding.pry here to examine list
 
 def project_list
   projects = []
@@ -121,9 +123,3 @@ end
 # ap plant.dig(:fields, :status, :statusCategory, :name)
 # # description is going to have to have its own processor
 # ap plant.dig(:fields, :description, :content)[0][:content][0][:text]
-
-# Post an issue. Note that this works in Postman.
-params = JSON.parse(File.read('./test.json'))
-api_url = 'https://doolin.atlassian.net/rest/api/2/issue/'
-api_helper = ApiHelper.new(api_url)
-_response = api_helper.post(params)
