@@ -3,3 +3,6 @@ AllCops:
   Exclude:
     - 'spec/fixtures/**/*'
     - 'vendor/**/*'
+
+Metrics/MethodLength:
+  CountAsOne: ['hash']

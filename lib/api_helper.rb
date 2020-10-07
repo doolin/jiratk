@@ -19,16 +19,20 @@ class ApiHelper
     end
   end
 
-  def post(params)
-    # @resource.post(accept: :json, params: params) do |resp, req, res, &block|
-    # @resource.post(@api_url, payload: params.to_json) do |response, request, res, &block|
-
-    @response = RestClient::Request.new(
+  def post_client(params)
+    RestClient::Request.new(
       url: @api_url, user: USERNAME, password: PASSWORD, payload: params.to_json, method: :post,
       headers: { content_type: 'application/json' }
-    ).execute do |response, request, _result, &block|
+    )
+  end
+
+  def post(params)
+    post_client(params).execute do |response, request, _result, &block|
       puts "RESPONSE: #{response.code}"
       puts "REQUEST: #{request}"
+
+      # binding.pry
+
       return response if (200..499).include? response.code
 
       response.return!(request, res, &block)
