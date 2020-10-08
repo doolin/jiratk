@@ -22,12 +22,12 @@ class Issue
   def initialize(project_key: 'SCRUM', issuetype_name: 'Task')
     @project_key = project_key
     @issuetype_name = issuetype_name
-    @gem = 'rspec-core'
-    @version = '3.9.3'
+    @gem = 'rails'
+    @version = '6.0.3.4'
   end
 
   def summary
-    "update  #{@gem} gem to version #{@version}"
+    raise NotImplementedError # "update  #{@gem} gem to version #{@version}"
   end
 
   def description
@@ -39,7 +39,7 @@ class Issue
   end
 
   def labels
-    ['maintenance']
+    raise NotImplementedError # ['maintenance']
   end
 
   def acceptance_criteria
@@ -81,16 +81,34 @@ class Issue
   end
 end
 
+# Subclass to reduce cognitive load
+class GemIssue < Issue
+  def summary
+    "update  #{@gem} gem to version #{@version}"
+  end
+
+  def labels
+    ['maintenance']
+  end
+end
+
 # params = JSON.parse(File.read('./test.json'))
 
-puts 'EXITING NOW so as not to mess up the board, check parameters before proceeding.'
-exit
+# puts 'EXITING NOW so as not to mess up the board, check parameters before proceeding.'
+# exit
+
+_ticket = OpenStruct.new(
+  projecct: 'TASKLETS',
+  labels: ['maintenance'],
+  gem: 'rails',
+  version: '6.0.3.4'
+)
 
 # project = 'TASKLETS'
-# project = 'SCRUM'
+project = 'SCRUM'
 
-# params = Issue.new(project_key: project).to_h
+params = GemIssue.new(project_key: project).to_h
 
-# api_url = 'https://doolin.atlassian.net/rest/api/2/issue/'
-# api_helper = ApiHelper.new(api_url)
-# api_helper.post(params)
+api_url = 'https://doolin.atlassian.net/rest/api/2/issue/'
+api_helper = ApiHelper.new(api_url)
+api_helper.post(params)

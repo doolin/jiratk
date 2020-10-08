@@ -29,9 +29,7 @@ class ApiHelper
   def post(params)
     post_client(params).execute do |response, request, _result, &block|
       puts "RESPONSE: #{response.code}"
-      puts "REQUEST: #{request}"
-
-      # binding.pry
+      puts "RESPONSE BODY: #{response.body}"
 
       return response if (200..499).include? response.code
 
