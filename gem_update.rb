@@ -19,11 +19,11 @@ PASSWORD = api_keys[:jira_key]
 
 # Helper class for keep in the json generation under control.
 class Issue
-  def initialize(project_key: 'SCRUM', issuetype_name: 'Task')
-    @project_key = project_key
-    @issuetype_name = issuetype_name
-    @gem = 'rails'
-    @version = '6.0.3.4'
+  def initialize(ticket)
+    @project_key = ticket.project_key
+    @issuetype_name = ticket.issuetype_name
+    @gem = ticket.gem
+    @version = ticket.version
   end
 
   def summary
@@ -97,17 +97,17 @@ end
 # puts 'EXITING NOW so as not to mess up the board, check parameters before proceeding.'
 # exit
 
-_ticket = OpenStruct.new(
-  projecct: 'TASKLETS',
+require 'ostruct'
+
+ticket = OpenStruct.new(
+  project_key: 'SCRUM',
   labels: ['maintenance'],
-  gem: 'rails',
-  version: '6.0.3.4'
+  issuetype_name: 'Task',
+  gem: 'rubocop',
+  version: '0.93.0'
 )
 
-# project = 'TASKLETS'
-project = 'SCRUM'
-
-params = GemIssue.new(project_key: project).to_h
+params = GemIssue.new(ticket).to_h
 
 api_url = 'https://doolin.atlassian.net/rest/api/2/issue/'
 api_helper = ApiHelper.new(api_url)
