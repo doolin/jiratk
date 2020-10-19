@@ -92,19 +92,13 @@ class GemIssue < Issue
   end
 end
 
-# params = JSON.parse(File.read('./test.json'))
-
-# puts 'EXITING NOW so as not to mess up the board, check parameters before proceeding.'
-# exit
-
 require 'ostruct'
 
 ticket = OpenStruct.new(
   project_key: 'SCRUM',
-  labels: ['maintenance'],
   issuetype_name: 'Task',
-  gem: 'rubocop',
-  version: '0.93.0'
+  gem: 'aws-partitions',
+  version: '1.383.0'
 )
 
 params = GemIssue.new(ticket).to_h
