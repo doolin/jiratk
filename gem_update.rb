@@ -10,8 +10,8 @@ require 'json'
 require 'aws-sdk-s3'
 require 'csv'
 
-require_relative 'lib/account_manager'
-require_relative 'lib/api_helper'
+require_relative 'lib/jiratk/account_manager'
+require_relative 'lib/jiratk/api_helper'
 
 api_keys = AccountManager.new.api_keys
 USERNAME = api_keys[:jira_id]
@@ -97,8 +97,8 @@ require 'ostruct'
 ticket = OpenStruct.new(
   project_key: 'SCRUM',
   issuetype_name: 'Task',
-  gem: 'aws-partitions',
-  version: '1.383.0'
+  gem: 'rubocop',
+  version: '1.0.0'
 )
 
 params = GemIssue.new(ticket).to_h
