@@ -10,8 +10,8 @@ require 'json'
 require 'aws-sdk-s3'
 require 'csv'
 
-require_relative 'lib/account_manager'
-require_relative 'lib/api_helper'
+require_relative 'lib/jiratk/account_manager'
+require_relative 'lib/jiratk/api_helper'
 
 api_keys = AccountManager.new.api_keys
 USERNAME = api_keys[:jira_id]
