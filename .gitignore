@@ -2,5 +2,6 @@ spec/fixtures
 credentials.json
 application*.json
 copyt*.json
+copytemp*.json
 *token.yaml
 .rspec_status
