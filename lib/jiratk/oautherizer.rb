@@ -1,5 +1,10 @@
 # frozen-string-literal: true
 
+require 'google/apis/drive_v3'
+require 'google/apis/sheets_v4'
+require 'googleauth'
+require 'googleauth/stores/file_token_store'
+
 # Encapsulate the gory details.
 class OAutherizer
   OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'
