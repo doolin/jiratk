@@ -10,7 +10,7 @@ require 'fileutils'
 require 'ap'
 require 'pry'
 
-require_relative './lib/jiratk/oautherizer'
+require_relative '../lib/jiratk/oautherizer'
 
 APPLICATION_NAME = 'Drive API Ruby Quickstart'
 

@@ -1,29 +1,12 @@
-#!/usr/bin/env ruby
-
 # frozen-string-literal: true
 
-require 'pp'
-require 'ap'
-require 'pry'
-require 'rest-client'
-require 'json'
-require 'aws-sdk-s3'
-require 'csv'
-
-require_relative 'lib/jiratk/account_manager'
-require_relative 'lib/jiratk/api_helper'
-
-api_keys = AccountManager.new.api_keys
-USERNAME = api_keys[:jira_id]
-PASSWORD = api_keys[:jira_key]
-
 # Helper class for keep in the json generation under control.
-class Issue
-  def initialize(ticket)
-    @project_key = ticket.project_key
-    @issuetype_name = ticket.issuetype_name
-    @gem = ticket.gem
-    @version = ticket.version
+class JiraTicket
+  def initialize(params)
+    @project_key = params.project_key
+    @issuetype_name = params.issuetype_name
+    # @gem = params.gem
+    # @version = params.version
   end
 
   def summary
@@ -31,7 +14,7 @@ class Issue
   end
 
   def description
-    raise NotImplementedError
+    raise NotImplementedError # ['maintenance']
   end
 
   def issuetype
@@ -80,33 +63,3 @@ class Issue
     }
   end
 end
-
-# Subclass to reduce cognitive load
-class GemIssue < Issue
-  def summary
-    "update  #{@gem} gem to version #{@version}"
-  end
-
-  def labels
-    ['maintenance']
-  end
-
-  def description
-    'updating a ruby gem'
-  end
-end
-
-require 'ostruct'
-
-ticket = OpenStruct.new(
-  project_key: 'SCRUM',
-  issuetype_name: 'Task',
-  gem: 'rubocop',
-  version: '1.0.42'
-)
-
-params = GemIssue.new(ticket).to_h
-
-api_url = 'https://doolin.atlassian.net/rest/api/2/issue/'
-api_helper = ApiHelper.new(api_url)
-api_helper.post(params)

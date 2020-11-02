@@ -30,6 +30,11 @@ blocks:
           - checkout
           - cache restore
       jobs:
+        - name: Spec it all up
+          commands:
+            - bundle config set path 'vendor/bundle'
+            - bundle install
+            - bundle exec rspec
         - name: Linting for the win
           commands:
             - bundle config set path 'vendor/bundle'
