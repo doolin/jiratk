@@ -40,3 +40,9 @@ blocks:
             - bundle config set path 'vendor/bundle'
             - bundle install
             - bundle exec rubocop --parallel
+        - name: Flay
+          commands:
+            - bundle config set path 'vendor/bundle'
+            - bundle install
+            - echo "flay isn't working"
+            # - bundle exec flay
