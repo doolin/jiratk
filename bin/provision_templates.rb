@@ -42,8 +42,10 @@ api_helper = ApiHelper.new(api_url)
 # TODO: this class instantiates on the id, and combines
 # the Drive and Jira API calls. Probably doesn't even need
 # to be a class, could be a function.
+# rubocop:disable Lint/EmptyClass
 class Coordinator
 end
+# rubocop:enable Lint/EmptyClass
 
 require 'ostruct'
 
