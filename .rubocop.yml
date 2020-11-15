@@ -6,3 +6,8 @@ AllCops:
 
 Metrics/MethodLength:
   CountAsOne: ['hash']
+
+Naming/VariableNumber:
+  # Jira has wacko field names, which are reflected
+  # in the hashes which get turned into json.
+  CheckSymbols: false
