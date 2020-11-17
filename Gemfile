@@ -12,3 +12,5 @@ gem 'pry-nav'
 gem 'rest-client'
 gem 'rspec'
 gem 'rubocop'
+
+gem 'runbook', '~> 1.0'
