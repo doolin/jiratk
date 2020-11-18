@@ -25,10 +25,13 @@ def s3
   @s3 ||= Aws::S3::Client.new(region: aws_region)
 end
 
-def get_issues_for(project)
+# setting maxResults: 0 returns just metadata which will
+# contain `total`, the number of issues in a project.
+def issue_count_for(project)
   query = {
     jql: "project = \"#{project}\"",
-    start_at: 1
+    startAt: 0,
+    maxResults: 0
   }
 
   api_url = 'https://doolin.atlassian.net/rest/api/3/search'
@@ -36,18 +39,40 @@ def get_issues_for(project)
 
   response = api_helper.get(query)
   response_json = JSON.parse(response)
-  # ticket_count = response_json['total']
+  response_json['total']
+end
+
+STEP = 50
+
+# `startAt` works in reverse order: it indexes the latest
+# ticket at 0, and works backwards from that.
+def get_issues_for(project, start_at)
+  query = {
+    jql: "project = \"#{project}\"",
+    startAt: start_at.to_s,
+    maxResults: STEP
+  }
+
+  api_url = 'https://doolin.atlassian.net/rest/api/3/search'
+  api_helper = ApiHelper.new(api_url)
+
+  response = api_helper.get(query)
+  response_json = JSON.parse(response)
   response_json['issues']
 end
 
+# TODO: delete this method after refactor
 def list_issues_for(project)
-  issues = get_issues_for(project)
+  issues = get_issues_for(project, 0)
   issues.each do |issue|
     puts issue['key']
+    # File.open("/tmp/jira/#{issue['key']}.json","w") do |f|
+    #   f.write(issue)
+    # end
   end
   issues
 end
-_issues = list_issues_for('TASKLETS')
+# _issues = list_issues_for('TASKLETS')
 # binding.pry here to examine list
 
 def project_list
@@ -56,6 +81,7 @@ def project_list
   api_helper = ApiHelper.new(api_url)
   response = api_helper.get({})
   response_json = JSON.parse(response)
+  # TODO: see if map works here, would be cleaner
   response_json['values'].each do |value|
     projects << value['key']
   end
@@ -63,10 +89,31 @@ def project_list
   projects
 end
 
-# Next up: push the issues up to S3, need to terraform a new bucket.
+# Do tasklets project first
+def batch_download_for(project)
+  total = issue_count_for(project)
+
+  (0..total).step(STEP).each do |start_at|
+    issues = get_issues_for(project, start_at)
+    issues.each do |issue|
+      puts issue['key']
+      File.open("/tmp/jira/#{issue['key']}.json", 'w') do |f|
+        f.write(issue)
+      end
+    end
+  end
+end
+batch_download_for('TASKLETS')
+
 def upload_to_s3
+  # move the actual upload api call here
+end
+
+# Next up: push the issues up to S3, need to terraform a new bucket.
+# Split the actual api call out.
+def write_to_s3
   project_list.each do |project|
-    issues = get_issues_for(project)
+    issues = get_issues_for(project, 1)
     issues.each do |issue|
       s3.put_object(bucket: 'inventium-jira', key: issue['key'], body: issue.to_json)
     end
