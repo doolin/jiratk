@@ -7,23 +7,15 @@ require 'ap'
 require 'pry'
 require 'rest-client'
 require 'json'
-require 'aws-sdk-s3'
 require 'csv'
 
 require_relative 'lib/jiratk/account_manager'
 require_relative 'lib/jiratk/api_helper'
+require_relative 'lib/jiratk/s3_tools'
 
 api_keys = AccountManager.new.api_keys
 USERNAME = api_keys[:jira_id]
 PASSWORD = api_keys[:jira_key]
-
-def aws_region
-  ENV['AWS_REGION']
-end
-
-def s3
-  @s3 ||= Aws::S3::Client.new(region: aws_region)
-end
 
 # setting maxResults: 0 returns just metadata which will
 # contain `total`, the number of issues in a project.
@@ -103,22 +95,21 @@ def batch_download_for(project)
     end
   end
 end
-batch_download_for('TASKLETS')
+# batch_download_for('TASKLETS')
 
-def upload_to_s3
-  # move the actual upload api call here
+def s3
+  @s3 ||= S3Tools.new
 end
 
-# Next up: push the issues up to S3, need to terraform a new bucket.
-# Split the actual api call out.
 def write_to_s3
   project_list.each do |project|
-    issues = get_issues_for(project, 1)
+    issues = get_issues_for(project, 0)
     issues.each do |issue|
-      s3.put_object(bucket: 'inventium-jira', key: issue['key'], body: issue.to_json)
+      s3.write(issue)
     end
   end
 end
+write_to_s3
 
 # Next round of work is writing the files to a local directory
 # for convenience. This will help with generating csvs a lot.
