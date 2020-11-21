@@ -181,6 +181,7 @@ GEM
       unf_ext
     unf_ext (0.0.7.7)
     unicode-display_width (1.7.0)
+    vcr (6.0.0)
     wisper (2.0.1)
     zeitwerk (2.4.1)
 
@@ -197,6 +198,7 @@ DEPENDENCIES
   rspec
   rubocop
   runbook (~> 1.0)
+  vcr (~> 6.0)
 
 RUBY VERSION
    ruby 2.7.2p137
