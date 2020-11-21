@@ -2,18 +2,21 @@
 
 # frozen-string-literal: true
 
-require 'pp'
+# TODO: move requires to appropriate file to minimize
+# the number of requires for this script.
 require 'ap'
 require 'pry'
 require 'rest-client'
 require 'json'
 require 'csv'
 
+# TODO: `require '../lib/jiratk'` and have all these loaded in that file.
 require_relative '../lib/jiratk/account_manager'
 require_relative '../lib/jiratk/api_helper'
 require_relative '../lib/jiratk/s3_tools'
 
-api_keys = AccountManager.new.api_keys
+@am = AccountManager.new
+api_keys = @am.api_keys
 USERNAME = api_keys[:jira_id]
 PASSWORD = api_keys[:jira_key]
 
@@ -53,7 +56,7 @@ def get_issues_for(project, start_at)
   response_json['issues']
 end
 
-# TODO: delete this method after refactor
+# TODO: refactor to Project#issue_keys
 def list_issues_for(project)
   issues = get_issues_for(project, 0)
   issues.each do |issue|
@@ -66,20 +69,6 @@ def list_issues_for(project)
 end
 # _issues = list_issues_for('TASKLETS')
 # binding.pry here to examine list
-
-def project_list
-  projects = []
-  api_url = 'https://doolin.atlassian.net/rest/api/3/project/search'
-  api_helper = ApiHelper.new(api_url)
-  response = api_helper.get({})
-  response_json = JSON.parse(response)
-  # TODO: see if map works here, would be cleaner
-  response_json['values'].each do |value|
-    projects << value['key']
-  end
-
-  projects
-end
 
 def path
   @path ||= '/tmp' # or current working directory tmp, or whatever
@@ -95,28 +84,29 @@ def batch_download_for(project)
     issues = get_issues_for(project, start_at)
     issues.each do |issue|
       puts issue['key']
-      # TODO: factor this out as a DI
+      # TODO: factor this out as a DI, should take an S3 writer
+      # and a File writer
       File.open("#{path}/jira/#{issue['key']}.json", 'w') do |f|
         f.write(issue)
       end
     end
   end
 end
-batch_download_for('TASKLETS')
+# batch_download_for('TASKLETS')
 
 def s3
   @s3 ||= S3Tools.new
 end
 
 def write_to_s3
-  project_list.each do |project|
+  @am.project_keys.each do |project|
     issues = get_issues_for(project, 0)
     issues.each do |issue|
       s3.write(issue)
     end
   end
 end
-# write_to_s3
+write_to_s3
 
 # TODO: rewrite script in terms of DSL:
 # configure:
