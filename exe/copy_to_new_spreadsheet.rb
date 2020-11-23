@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # frozen-string-literal: true
 
+# This script doesn't really work, should probably delete it.
+
 require 'google/apis/drive_v3'
 require 'google/apis/sheets_v4'
 require 'googleauth'
@@ -10,7 +12,7 @@ require 'fileutils'
 require 'ap'
 require 'pry'
 
-require_relative '../lib/jiratk/oautherizer'
+require_relative '../lib/jiratk'
 
 APPLICATION_NAME = 'Drive API Ruby Quickstart'
 
