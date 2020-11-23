@@ -13,14 +13,6 @@ RSpec.describe Project do
     it 'counts the project issues'
   end
 
-  describe '.path' do
-    it 'stashes path'
-  end
-
-  describe '.list_issues_for' do
-    it 'lists the issues'
-  end
-
   describe '.batch_download_for' do
     it 'downloads all issues for a project'
   end
