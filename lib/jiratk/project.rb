@@ -41,33 +41,21 @@ class Project
     response_json['total']
   end
 
-  def self.list_issues_for(project)
-    issues = get_issues_for(project, 0)
-    issues.each do |issue|
-      puts issue['key']
-      # File.open("/tmp/jira/#{issue['key']}.json","w") do |f|
-      #   f.write(issue)
-      # end
+  def self.file_writer(issue, path = '/tmp')
+    File.open("#{path}/jira/#{issue['key']}.json", 'w') do |f|
+      f.write(issue)
     end
-    issues
   end
 
-  def self.path
-    @path ||= '/tmp' # or current working directory tmp, or whatever
-  end
-
-  def self.batch_download_for(project)
+  def self.batch_download_for(project, writer = method(:file_writer))
     total = issue_count_for(project)
 
     (0..total).step(STEP).each do |start_at|
       issues = get_issues_for(project, start_at)
+
       issues.each do |issue|
         puts issue['key']
-        # TODO: factor this out as a DI, should take an S3 writer
-        # and a File writer
-        File.open("#{path}/jira/#{issue['key']}.json", 'w') do |f|
-          f.write(issue)
-        end
+        writer.call(issue)
       end
     end
   end
