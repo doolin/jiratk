@@ -10,8 +10,7 @@ require 'json'
 require 'aws-sdk-s3'
 require 'csv'
 
-require_relative '../lib/jiratk/account_manager'
-require_relative '../lib/jiratk/api_helper'
+require_relative '../lib/jiratk'
 
 api_keys = AccountManager.new.api_keys
 USERNAME = api_keys[:jira_id]
@@ -102,7 +101,7 @@ ticket = OpenStruct.new(
   project_key: 'SCRUM',
   issuetype_name: 'Task',
   gem: 'rubocop',
-  version: '1.0.42'
+  version: '1.3.1'
 )
 
 params = GemIssue.new(ticket).to_h

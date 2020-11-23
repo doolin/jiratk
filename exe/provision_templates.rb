@@ -3,14 +3,7 @@
 
 require 'fileutils'
 
-require 'ap'
-require 'pry'
-
-require_relative '../lib/jiratk/oautherizer'
-require_relative '../lib/jiratk/account_manager'
-require_relative '../lib/jiratk/api_helper'
-require_relative '../lib/jiratk/assessment_ticket'
-require_relative '../lib/jiratk/template_cloner'
+require_relative '../lib/jiratk'
 
 # TODO: step 4 from https://docs.google.com/spreadsheets/d/1JD10EqecIqj8qB-kQTeCBPjxDOkpG-BZvdqX_ukX6Gs/edit#gid=0
 # Create a dedicated class for provisioning these tickets, which instantiates with an

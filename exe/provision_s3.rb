@@ -2,11 +2,7 @@
 
 # frozen-string-literal: true
 
-# TODO: `require '../lib/jiratk'` and have all these loaded in that file.
-require_relative '../lib/jiratk/account_manager'
-require_relative '../lib/jiratk/api_helper'
-require_relative '../lib/jiratk/s3_tools'
-require_relative '../lib/jiratk/project'
+require_relative '../lib/jiratk'
 
 def account_manager
   @account_manager ||= AccountManager.new
@@ -22,6 +18,7 @@ PASSWORD = api_keys[:jira_key]
 # puts "issue count for GEN project: #{Project.issue_count_for('GEN')}"
 # puts "list of keys for PLANTS project: #{Project.list_issues_for('PLANTS')}"
 # Project.batch_download_for('PLANTS')
+# exit
 
 def write_all_issues_to_s3
   s3 = S3Tools.new
