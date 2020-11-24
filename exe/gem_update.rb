@@ -2,22 +2,11 @@
 
 # frozen-string-literal: true
 
-require 'pp'
-require 'ap'
-require 'pry'
-require 'rest-client'
-require 'json'
-require 'aws-sdk-s3'
-require 'csv'
 require 'runbook'
-
 require_relative '../lib/jiratk'
 
-api_keys = AccountManager.new.api_keys
-USERNAME = api_keys[:jira_id]
-PASSWORD = api_keys[:jira_key]
-
 # Helper class for keep in the json generation under control.
+# TODO: Move to an Issue class
 class Issue
   def initialize(ticket)
     @project_key = ticket.project_key
@@ -100,6 +89,8 @@ require 'ostruct'
 
 # rubocop:disable Metrics/BlockLength
 runbook = Runbook.book 'Update gem' do
+  # TODO: add setup section for instantiating ApiHelper
+
   section 'collect gem information' do
     step 'collect project name' do
       ask 'what project?', into: :project
@@ -123,9 +114,13 @@ runbook = Runbook.book 'Update gem' do
         params = GemIssue.new(ticket).to_h
         confirm "Gem update parameters: #{params}"
 
+        api_keys = AccountManager.new.api_keys
+        username = api_keys[:jira_id]
+        password = api_keys[:jira_key]
+        api_helper = ApiHelper.new(username, password)
         api_url = 'https://doolin.atlassian.net/rest/api/2/issue/'
-        api_helper = ApiHelper.new(api_url)
-        api_helper.post(params)
+
+        api_helper.post(api_url, params)
       end
     end
   end

@@ -26,4 +26,4 @@ fileservice.authorization = FileAuth.new.authorize
 # https://docs.google.com/spreadsheets/d/1kgLR6IMDDrhy2pgZy106tiSoSbCY0a105xRfK4t7jU8/edit#gid=1342191115
 source_id = '1kgLR6IMDDrhy2pgZy106tiSoSbCY0a105xRfK4t7jU8'
 new_file = fileservice.copy_file(source_id)
-fileservice.update_file(new_file.id, Google::Apis::DriveV3::File.new(name: '1 AAA Estimation'))
+fileservice.update_file(new_file.id, Google::Apis::DriveV3::File.new(name: '1 AAA Estimation [deleteme]'))

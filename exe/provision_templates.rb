@@ -24,10 +24,10 @@ fileservice.authorization = FileAuth.new.authorize
 # elsewhere and not have the following block of code cluttering
 # up the file.
 api_keys = AccountManager.new.api_keys
-USERNAME = api_keys[:jira_id]
-PASSWORD = api_keys[:jira_key]
+username = api_keys[:jira_id]
+password = api_keys[:jira_key]
 api_url = 'https://doolin.atlassian.net/rest/api/2/issue/'
-api_helper = ApiHelper.new(api_url)
+api_helper = ApiHelper.new(username, password)
 
 # Everything above here needs to go into its own class.
 # Below here is where the operator action occurs.
@@ -62,7 +62,7 @@ ids.each do |id|
   )
 
   params = AssessmentTicket.new(params).to_h
-  api_helper.post(params)
+  api_helper.post(api_url, params)
 
   puts tc.url
 end

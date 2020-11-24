@@ -15,10 +15,10 @@ class AccountManager
     @search_url ||= 'https://doolin.atlassian.net/rest/api/3/project/search'
   end
 
-  def project_keys
-    api_helper = ApiHelper.new(search_url)
+  def project_keys(api_helper)
+    # api_helper = ApiHelper.new(search_url)
 
-    response = api_helper.get({})
+    response = api_helper.get(search_url, {})
     response_json = JSON.parse(response)
 
     response_json['values'].map { |value| value['key'] }
