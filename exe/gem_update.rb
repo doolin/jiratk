@@ -9,6 +9,7 @@ require 'rest-client'
 require 'json'
 require 'aws-sdk-s3'
 require 'csv'
+require 'runbook'
 
 require_relative '../lib/jiratk'
 
@@ -83,7 +84,7 @@ end
 # Subclass to reduce cognitive load
 class GemIssue < Issue
   def summary
-    "update  #{@gem} gem to version #{@version}"
+    "update #{@gem} gem to version #{@version}"
   end
 
   def labels
@@ -97,15 +98,42 @@ end
 
 require 'ostruct'
 
-ticket = OpenStruct.new(
-  project_key: 'SCRUM',
-  issuetype_name: 'Task',
-  gem: 'rubocop',
-  version: '1.3.1'
-)
+# rubocop:disable Metrics/BlockLength
+runbook = Runbook.book 'Update gem' do
+  section 'collect gem information' do
+    step 'collect project name' do
+      ask 'what project?', into: :project
+      ask 'what gem?', into: :gem
+      ask 'what version?', into: :version
+      ruby_command do
+        confirm "project name #{project}?"
+        confirm "gem name #{gem}?"
+        confirm "version number #{version}?"
+      end
+    end
 
-params = GemIssue.new(ticket).to_h
+    step 'load up the struct' do
+      ruby_command do
+        ticket = OpenStruct.new(
+          project_key: project,
+          issuetype_name: 'Task',
+          gem: gem,
+          version: version
+        )
+        params = GemIssue.new(ticket).to_h
+        confirm "Gem update parameters: #{params}"
 
-api_url = 'https://doolin.atlassian.net/rest/api/2/issue/'
-api_helper = ApiHelper.new(api_url)
-api_helper.post(params)
+        api_url = 'https://doolin.atlassian.net/rest/api/2/issue/'
+        api_helper = ApiHelper.new(api_url)
+        api_helper.post(params)
+      end
+    end
+  end
+end
+# rubocop:enable Metrics/BlockLength
+
+if __FILE__ == $PROGRAM_NAME
+  Runbook::Runner.new(runbook).run
+else
+  runbook
+end
