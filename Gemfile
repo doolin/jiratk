@@ -18,3 +18,5 @@ gem 'rubocop'
 gem 'runbook', '~> 1.0'
 
 gem 'vcr', '~> 6.0'
+
+gem 'webmock', '~> 3.10'
