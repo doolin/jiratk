@@ -2,7 +2,8 @@
 
 require 'rest-client'
 
-# Add class documentation
+# Wrap the HTTP methods to make invocation much simpler and
+# domain specific.
 class ApiHelper
   def initialize(username = nil, password = nil)
     @username = username
