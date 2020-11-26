@@ -14,7 +14,8 @@ password = api_keys[:jira_key]
 @api_helper = ApiHelper.new(username, password)
 
 # TODO: Create a "fake" project on Jira, prepopulate with fake issues in various
-# states, then use that project with those issues to test the following:
+# states: https://doolin.atlassian.net/browse/GEN-83
+# Then use that project with those issues to test the following:
 # puts "issue count for GEN project: #{Project.issue_count_for(@api_helper, 'GEN')}"
 # Project.batch_download_for(@api_helper, 'PLANTS')
 # exit

@@ -6,7 +6,7 @@ require 'runbook'
 require_relative '../lib/jiratk'
 
 # Helper class for keep in the json generation under control.
-# TODO: Move to an Issue class
+# TODO: Move to Issue class https://doolin.atlassian.net/browse/GEN-90
 class Issue
   def initialize(ticket)
     @project_key = ticket.project_key

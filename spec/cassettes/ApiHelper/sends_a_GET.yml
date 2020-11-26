@@ -1,0 +1,65 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://doolin.atlassian.net/rest/api/3/project/search
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - rest-client/2.1.0 (darwin17.7.0 x86_64) ruby/2.7.2p137
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - doolin.atlassian.net
+      Authorization:
+      - "<REDACTED>"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - AtlassianProxy/1.15.8.1
+      Vary:
+      - Accept-Encoding
+      Cache-Control:
+      - no-cache, no-store, no-transform
+      Content-Type:
+      - application/json;charset=UTF-8
+      Strict-Transport-Security:
+      - max-age=315360000; includeSubDomains; preload
+      Date:
+      - Thu, 26 Nov 2020 12:06:18 GMT
+      Atl-Traceid:
+      - 5e553ca40b419476
+      X-Arequestid:
+      - d7ad8010-4d7e-440c-afd7-4d87f79a8c93
+      X-Aaccountid:
+      - "<REDACTED>"
+      X-Xss-Protection:
+      - 1; mode=block
+      Transfer-Encoding:
+      - chunked
+      Timing-Allow-Origin:
+      - "*"
+      X-Envoy-Upstream-Service-Time:
+      - '77'
+      X-Content-Type-Options:
+      - nosniff
+      Connection:
+      - keep-alive
+      Set-Cookie:
+      - "<REDACTED>"
+      Expect-Ct:
+      - report-uri="https://web-security-reports.services.atlassian.com/expect-ct-report/global-proxy",
+        enforce, max-age=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"self":"https://doolin.atlassian.net/rest/api/3/project/search?maxResults=50&startAt=0","maxResults":50,"startAt":0,"total":7,"isLast":true,"values":[{"expand":"description,lead,issueTypes,url,projectKeys,permissions,insight","self":"https://doolin.atlassian.net/rest/api/3/project/10004","id":"10004","key":"ADMIN","name":"Administrivia","avatarUrls":{"48x48":"https://doolin.atlassian.net/secure/projectavatar?pid=10004&avatarId=10401","24x24":"https://doolin.atlassian.net/secure/projectavatar?size=small&s=small&pid=10004&avatarId=10401","16x16":"https://doolin.atlassian.net/secure/projectavatar?size=xsmall&s=xsmall&pid=10004&avatarId=10401","32x32":"https://doolin.atlassian.net/secure/projectavatar?size=medium&s=medium&pid=10004&avatarId=10401"},"projectTypeKey":"software","simplified":false,"style":"classic","isPrivate":false,"properties":{}},{"expand":"description,lead,issueTypes,url,projectKeys,permissions,insight","self":"https://doolin.atlassian.net/rest/api/3/project/10005","id":"10005","key":"BST","name":"Binary
+        search trees","avatarUrls":{"48x48":"https://doolin.atlassian.net/secure/projectavatar?pid=10005&avatarId=10408","24x24":"https://doolin.atlassian.net/secure/projectavatar?size=small&s=small&pid=10005&avatarId=10408","16x16":"https://doolin.atlassian.net/secure/projectavatar?size=xsmall&s=xsmall&pid=10005&avatarId=10408","32x32":"https://doolin.atlassian.net/secure/projectavatar?size=medium&s=medium&pid=10005&avatarId=10408"},"projectTypeKey":"software","simplified":false,"style":"classic","isPrivate":false,"properties":{}},{"expand":"description,lead,issueTypes,url,projectKeys,permissions,insight","self":"https://doolin.atlassian.net/rest/api/3/project/10006","id":"10006","key":"FIN","name":"FInishing","avatarUrls":{"48x48":"https://doolin.atlassian.net/secure/projectavatar?pid=10006&avatarId=10402","24x24":"https://doolin.atlassian.net/secure/projectavatar?size=small&s=small&pid=10006&avatarId=10402","16x16":"https://doolin.atlassian.net/secure/projectavatar?size=xsmall&s=xsmall&pid=10006&avatarId=10402","32x32":"https://doolin.atlassian.net/secure/projectavatar?size=medium&s=medium&pid=10006&avatarId=10402"},"projectTypeKey":"software","simplified":false,"style":"classic","isPrivate":false,"properties":{}},{"expand":"description,lead,issueTypes,url,projectKeys,permissions,insight","self":"https://doolin.atlassian.net/rest/api/3/project/10003","id":"10003","key":"GEN","name":"General","avatarUrls":{"48x48":"https://doolin.atlassian.net/secure/projectavatar?pid=10003&avatarId=10412","24x24":"https://doolin.atlassian.net/secure/projectavatar?size=small&s=small&pid=10003&avatarId=10412","16x16":"https://doolin.atlassian.net/secure/projectavatar?size=xsmall&s=xsmall&pid=10003&avatarId=10412","32x32":"https://doolin.atlassian.net/secure/projectavatar?size=medium&s=medium&pid=10003&avatarId=10412"},"projectTypeKey":"software","simplified":false,"style":"classic","isPrivate":false,"properties":{}},{"expand":"description,lead,issueTypes,url,projectKeys,permissions,insight","self":"https://doolin.atlassian.net/rest/api/3/project/10001","id":"10001","key":"PLANT","name":"Plants","avatarUrls":{"48x48":"https://doolin.atlassian.net/secure/projectavatar?pid=10001&avatarId=10412","24x24":"https://doolin.atlassian.net/secure/projectavatar?size=small&s=small&pid=10001&avatarId=10412","16x16":"https://doolin.atlassian.net/secure/projectavatar?size=xsmall&s=xsmall&pid=10001&avatarId=10412","32x32":"https://doolin.atlassian.net/secure/projectavatar?size=medium&s=medium&pid=10001&avatarId=10412"},"projectTypeKey":"software","simplified":false,"style":"classic","isPrivate":false,"properties":{}},{"expand":"description,lead,issueTypes,url,projectKeys,permissions,insight","self":"https://doolin.atlassian.net/rest/api/3/project/10000","id":"10000","key":"SCRUM","name":"scrumtest","avatarUrls":{"48x48":"https://doolin.atlassian.net/secure/projectavatar?pid=10000&avatarId=10402","24x24":"https://doolin.atlassian.net/secure/projectavatar?size=small&s=small&pid=10000&avatarId=10402","16x16":"https://doolin.atlassian.net/secure/projectavatar?size=xsmall&s=xsmall&pid=10000&avatarId=10402","32x32":"https://doolin.atlassian.net/secure/projectavatar?size=medium&s=medium&pid=10000&avatarId=10402"},"projectTypeKey":"software","simplified":false,"style":"classic","isPrivate":false,"properties":{}},{"expand":"description,lead,issueTypes,url,projectKeys,permissions,insight","self":"https://doolin.atlassian.net/rest/api/3/project/10002","id":"10002","key":"TASKLETS","name":"tasklets","avatarUrls":{"48x48":"https://doolin.atlassian.net/secure/projectavatar?pid=10002&avatarId=10410","24x24":"https://doolin.atlassian.net/secure/projectavatar?size=small&s=small&pid=10002&avatarId=10410","16x16":"https://doolin.atlassian.net/secure/projectavatar?size=xsmall&s=xsmall&pid=10002&avatarId=10410","32x32":"https://doolin.atlassian.net/secure/projectavatar?size=medium&s=medium&pid=10002&avatarId=10410"},"projectTypeKey":"software","simplified":false,"style":"classic","isPrivate":false,"properties":{}}]}'
+  recorded_at: Thu, 26 Nov 2020 12:06:18 GMT
+recorded_with: VCR 6.0.0
