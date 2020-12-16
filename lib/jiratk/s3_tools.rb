@@ -16,4 +16,8 @@ class S3Tools
   def write(issue)
     client.put_object(bucket: 'inventium-jira', key: issue['key'], body: issue.to_json)
   end
+
+  def get_object(options)
+    client.get_object(options)
+  end
 end
