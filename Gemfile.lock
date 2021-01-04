@@ -24,7 +24,6 @@ GEM
       rspec-expectations (>= 2.99)
       thor (>= 0.19, < 2.0)
     ast (2.4.1)
-    attr_extras (6.2.4)
     awesome_print (1.8.0)
     aws-eventstream (1.1.0)
     aws-partitions (1.414.0)
@@ -147,8 +146,6 @@ GEM
     pastel (0.8.0)
       tty-color (~> 0.5)
     path_expander (1.1.0)
-    patience_diff (1.1.0)
-      trollop (~> 1.16)
     protobuf-cucumber (3.10.8)
       activesupport (>= 3.2)
       middleware
@@ -225,15 +222,10 @@ GEM
     sshkit-sudo (0.1.0)
       sshkit (~> 1.8)
     strings-ansi (0.1.0)
-    super_diff (0.5.2)
-      attr_extras (>= 6.2.4)
-      diff-lcs
-      patience_diff
     sys-uname (1.2.2)
       ffi (~> 1.1)
     thor (0.20.3)
     thread_safe (0.3.6)
-    trollop (1.16.2)
     tty-color (0.6.0)
     tty-cursor (0.7.1)
     tty-progressbar (0.17.0)
@@ -266,6 +258,7 @@ GEM
 
 PLATFORMS
   ruby
+  x86_64-darwin-18
 
 DEPENDENCIES
   aruba
@@ -282,12 +275,11 @@ DEPENDENCIES
   rubocop
   rubocop-rspec (~> 2.0)
   runbook (~> 1.0)
-  super_diff (~> 0.5.2)
   vcr (~> 6.0)
   webmock (~> 3.10)
 
 RUBY VERSION
-   ruby 2.7.2p137
+   ruby 3.0.0p-1
 
 BUNDLED WITH
-   2.1.4
+   2.2.0
