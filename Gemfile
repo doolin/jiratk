@@ -16,7 +16,7 @@ gem 'rest-client'
 gem 'rspec'
 gem 'rubocop'
 
-gem 'runbook', '~> 1.0'
+gem 'runbook'
 
 gem 'vcr', '~> 6.0'
 
