@@ -289,7 +289,7 @@ DEPENDENCIES
   rubocop-rspec
   runbook
   vcr (~> 6.0)
-  webmock (~> 3.10)
+  webmock
 
 RUBY VERSION
    ruby 2.7.2p137
