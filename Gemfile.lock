@@ -288,7 +288,7 @@ DEPENDENCIES
   rubocop
   rubocop-rspec
   runbook
-  vcr (~> 6.0)
+  vcr
   webmock
 
 RUBY VERSION
