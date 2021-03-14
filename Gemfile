@@ -22,4 +22,4 @@ gem 'vcr', '~> 6.0'
 
 gem 'webmock', '~> 3.10'
 
-gem 'rubocop-rspec', '~> 2.0'
+gem 'rubocop-rspec'
