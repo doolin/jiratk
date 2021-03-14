@@ -24,7 +24,7 @@ class Issue
   end
 
   def issuetype
-    { "name": @issuetype_name }
+    { name: @issuetype_name }
   end
 
   def labels
@@ -48,11 +48,11 @@ class Issue
   end
 
   def project
-    { "key": @project_key }
+    { key: @project_key }
   end
 
   def time_estimate
-    { "originalEstimate": '15m' }
+    { originalEstimate: '15m' }
   end
 
   def to_h
