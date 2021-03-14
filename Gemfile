@@ -15,11 +15,7 @@ gem 'pry-nav'
 gem 'rest-client'
 gem 'rspec'
 gem 'rubocop'
-
-gem 'runbook'
-
-gem 'vcr', '~> 6.0'
-
-gem 'webmock', '~> 3.10'
-
 gem 'rubocop-rspec'
+gem 'runbook'
+gem 'vcr', '~> 6.0'
+gem 'webmock'
