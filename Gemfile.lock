@@ -288,6 +288,7 @@ DEPENDENCIES
   rubocop
   rubocop-rspec
   runbook
+  tty-prompt
   vcr
   webmock
 
