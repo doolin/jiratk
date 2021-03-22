@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description   = 'API wrapper for creating and acquiring Jira issues.'
   spec.homepage      = 'https://github.com/doolin/jiratk'
   spec.license       = 'BSD'
-  spec.required_ruby_version = Gem::Requirement.new('2.7.2')
+  spec.required_ruby_version = '>= 2.7.2'
 
   # spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
 
