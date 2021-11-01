@@ -2,7 +2,7 @@
 
 require 'vcr'
 
-Dir[File.join(File.dirname(__FILE__), '..', 'lib', 'jiratk', '**.rb')].sort.each do |f|
+Dir[File.join(File.dirname(__FILE__), '..', 'lib', 'jiratk', '**.rb')].each do |f|
   require f
 end
 
