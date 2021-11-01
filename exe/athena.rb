@@ -74,8 +74,6 @@ ATHENA_EXPLANATION = <<~DOC
   124k1717 gold badges134134 silver badges176176 bronze badges
 DOC
 
-require 'pry'
-
 require_relative '../lib/jiratk/athena_tools'
 require_relative '../lib/jiratk/s3_tools'
 

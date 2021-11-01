@@ -1,6 +1,5 @@
 # frozen-string-literal: true
 
-require 'pry'
 require 'vcr'
 
 Dir[File.join(File.dirname(__FILE__), '..', 'lib', 'jiratk', '**.rb')].sort.each do |f|

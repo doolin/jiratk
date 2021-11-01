@@ -10,7 +10,6 @@ require 'googleauth/stores/file_token_store'
 require 'fileutils'
 
 require 'ap'
-require 'pry'
 
 require_relative '../lib/jiratk'
 
