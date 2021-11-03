@@ -14,3 +14,5 @@ gem 'rest-client'
 gem 'runbook'
 gem 'tty-prompt'
 gem 'webmock'
+
+gem 'debug', '~> 1.3'
