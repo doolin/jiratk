@@ -1,4 +1,4 @@
-# frozen-string-literal: true
+# frozen_string_literal: true
 
 # Helper class for keep in the json generation under control.
 class JiraTicket

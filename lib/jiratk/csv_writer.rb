@@ -1,4 +1,4 @@
-# frozen-string-literal: true
+# frozen_string_literal: true
 
 # Utilities for writing CSV files
 # What we really want to do is stream the json directly from the values returned

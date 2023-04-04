@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# frozen-string-literal: true
+# frozen_string_literal: true
 
 require 'runbook'
 require_relative '../lib/jiratk'
@@ -105,7 +105,7 @@ runbook = Runbook.book 'Update gem' do
 
     step 'load up the struct' do
       ruby_command do
-        ticket = OpenStruct.new(
+        ticket = Struct.new(
           project_key: project,
           issuetype_name: 'Task',
           gem: gem,

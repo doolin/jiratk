@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# frozen-string-literal: true
+# frozen_string_literal: true
 
 # This script doesn't really work, should probably delete it.
 

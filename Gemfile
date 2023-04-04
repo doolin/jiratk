@@ -1,4 +1,4 @@
-# frozen-string-literal: true
+# frozen_string_literal: true
 
 source 'https://rubygems.org'
 
@@ -14,5 +14,11 @@ gem 'rest-client'
 gem 'runbook'
 gem 'tty-prompt'
 gem 'webmock'
+
+gem 'flay'
+gem 'rspec'
+gem 'rubocop'
+gem 'rubocop-rspec'
+gem 'vcr'
 
 gem 'debug', '~> 1.3'

@@ -1,8 +1,8 @@
-# frozen-string-literal: true
+# frozen_string_literal: true
 
 RSpec.describe AccountManager do
   it 'instantiates' do
-    expect(described_class.new).not_to be nil
+    expect(described_class.new).not_to be_nil
   end
 
   describe '#api_keys' do
