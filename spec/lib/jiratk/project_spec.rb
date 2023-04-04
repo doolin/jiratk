@@ -1,8 +1,8 @@
-# frozen-string-literal: true
+# frozen_string_literal: true
 
 RSpec.describe Project do
   it 'instantiates' do
-    expect(described_class.new).to_not be nil
+    expect(described_class.new).not_to be_nil
   end
 
   describe '.get_issues_for' do

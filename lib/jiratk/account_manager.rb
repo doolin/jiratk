@@ -1,4 +1,4 @@
-# frozen-string-literal: true
+# frozen_string_literal: true
 
 require 'yaml'
 
@@ -6,8 +6,8 @@ require 'yaml'
 class AccountManager
   def api_keys
     @api_keys ||= {
-      jira_id: ENV['DOOLIN_JIRA_ID'],
-      jira_key: ENV['DOOLIN_JIRA_API']
+      jira_id: ENV.fetch('DOOLIN_JIRA_ID', nil),
+      jira_key: ENV.fetch('DOOLIN_JIRA_API', nil)
     }
   end
 

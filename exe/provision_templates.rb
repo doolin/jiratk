@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# frozen-string-literal: true
+# frozen_string_literal: true
 
 require 'fileutils'
 
@@ -54,7 +54,7 @@ ids.each do |id|
   tc = TemplateCloner.new(id, fileservice)
   tc.clone
 
-  params = OpenStruct.new(
+  params = Struct.new(
     project_key: PROJECT_KEY,
     issuetype_name: 'Task',
     url: tc.url,

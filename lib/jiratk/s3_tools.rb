@@ -1,11 +1,11 @@
-# frozen-string-literal: true
+# frozen_string_literal: true
 
 require 'aws-sdk-s3'
 
 # Simple wrapper for AWS S3 API.
 class S3Tools
   def region
-    ENV['AWS_REGION']
+    ENV.fetch('AWS_REGION', nil)
   end
 
   def client(options = {})
