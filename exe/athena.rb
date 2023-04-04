@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# frozen-string-literal: true
+# frozen_string_literal: true
 
 # The result is {:query_execution_id=>"05dfecae-4aec-4f3f-ba7c-c02f51bdac70"}
 # Do the following:

@@ -1,8 +1,8 @@
-# frozen-string-literal: true
+# frozen_string_literal: true
 
 RSpec.describe TemplateCloner do
   it 'instantiates' do
-    expect(described_class.new(nil, nil)).to_not be nil
+    expect(described_class.new(nil, nil)).not_to be_nil
   end
 
   describe '#name' do

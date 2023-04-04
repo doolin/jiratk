@@ -1,7 +1,7 @@
-# frozen-string-literal: true
+# frozen_string_literal: true
 
 RSpec.describe AssessmentTicket do
   it 'instantiates' do
-    expect(described_class.new(OpenStruct.new({}))).to_not be nil
+    expect(described_class.new(OpenStruct.new({}))).not_to be_nil # rubocop:disable Style/OpenStructUse
   end
 end

@@ -1,7 +1,7 @@
-# frozen-string-literal: true
+# frozen_string_literal: true
 
 RSpec.describe ApiHelper, :vcr do
-  after(:each) do
+  after do
     remove_secrets if VCR.current_cassette.recording?
   end
 
@@ -11,7 +11,7 @@ RSpec.describe ApiHelper, :vcr do
     username = api_keys[:jira_id]
     password = api_keys[:jira_key]
 
-    expect(described_class.new(username, password)).to_not be nil
+    expect(described_class.new(username, password)).not_to be_nil
   end
 
   # TODO: this should really be part of the AccountManager spec.

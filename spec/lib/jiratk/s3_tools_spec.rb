@@ -1,4 +1,4 @@
-# frozen-string-literal: true
+# frozen_string_literal: true
 
 RSpec.describe S3Tools do
   describe '#region' do
@@ -20,7 +20,7 @@ RSpec.describe S3Tools do
 
   describe '#client' do
     it 'acquires an S3 client instance' do
-      expect(described_class.new.client(stub_responses: true)).not_to be nil
+      expect(described_class.new.client(stub_responses: true)).not_to be_nil
     end
   end
 

@@ -1,4 +1,4 @@
-# frozen-string-literal: true
+# frozen_string_literal: true
 
 # Projects are composed of issues, components, and other
 # items.
@@ -38,9 +38,7 @@ class Project
   end
 
   def self.file_writer(issue, path = '/tmp')
-    File.open("#{path}/jira/#{issue['key']}.json", 'w') do |f|
-      f.write(issue)
-    end
+    File.write("#{path}/jira/#{issue['key']}.json", issue)
   end
 
   def self.batch_download_for(api_helper, project, writer = method(:file_writer))

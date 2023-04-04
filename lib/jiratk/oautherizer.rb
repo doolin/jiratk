@@ -1,4 +1,4 @@
-# frozen-string-literal: true
+# frozen_string_literal: true
 
 require 'google/apis/drive_v3'
 require 'google/apis/sheets_v4'
