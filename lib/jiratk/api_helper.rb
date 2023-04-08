@@ -15,7 +15,7 @@ class ApiHelper
       url, user: @username, password: @password
     )
 
-    resource.get(accept: :json, params: params) do |resp, req, res, &block|
+    resource.get(accept: :json, params:) do |resp, req, res, &block|
       return resp if (200..499).include? resp.code
 
       resp.return!(req, res, &block)
@@ -24,7 +24,7 @@ class ApiHelper
 
   def post_client(url, params)
     RestClient::Request.new(
-      url: url, user: @username, password: @password, payload: params.to_json, method: :post,
+      url:, user: @username, password: @password, payload: params.to_json, method: :post,
       headers: { content_type: 'application/json' }
     )
   end

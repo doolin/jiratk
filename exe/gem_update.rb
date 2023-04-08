@@ -58,11 +58,11 @@ class Issue
   def to_h
     {
       fields: {
-        project: project,
-        summary: summary,
-        description: description,
-        issuetype: issuetype,
-        labels: labels,
+        project:,
+        summary:,
+        description:,
+        issuetype:,
+        labels:,
         timetracking: time_estimate,
         customfield_10029: acceptance_criteria
       }
@@ -108,8 +108,8 @@ runbook = Runbook.book 'Update gem' do
         ticket = Struct.new(
           project_key: project,
           issuetype_name: 'Task',
-          gem: gem,
-          version: version
+          gem:,
+          version:
         )
         params = GemIssue.new(ticket).to_h
         confirm "Gem update parameters: #{params}"
