@@ -52,11 +52,11 @@ class JiraTicket
   def to_h
     {
       fields: {
-        project: project,
-        summary: summary,
-        description: description,
-        issuetype: issuetype,
-        labels: labels,
+        project:,
+        summary:,
+        description:,
+        issuetype:,
+        labels:,
         timetracking: time_estimate,
         customfield_10029: acceptance_criteria
       }

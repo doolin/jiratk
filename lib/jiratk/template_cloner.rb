@@ -34,7 +34,7 @@ class TemplateCloner
     @name = adjust(file.name)
 
     new_file = @fs.copy_file(@id)
-    copied_file = @fs.update_file(new_file.id, Google::Apis::DriveV3::File.new(name: name))
+    copied_file = @fs.update_file(new_file.id, Google::Apis::DriveV3::File.new(name:))
     @url = create_url(copied_file.id)
   end
 
