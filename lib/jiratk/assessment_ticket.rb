@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative './jira_ticket'
+require_relative 'jira_ticket'
 
 # Subclass to reduce cognitive load
 class AssessmentTicket < JiraTicket
