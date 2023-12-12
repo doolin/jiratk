@@ -39,7 +39,7 @@ class TemplateCloner
   end
 
   def adjust(name)
-    name.gsub!(/Template/, '')
+    name.gsub!('Template', '')
     "#{SERVICE_PREFIX} #{name} [test: delete me]"
   end
 

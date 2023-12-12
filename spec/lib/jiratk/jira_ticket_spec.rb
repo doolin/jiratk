@@ -4,7 +4,7 @@ require 'ostruct'
 
 RSpec.describe JiraTicket do
   it 'instantiates' do
-    params = OpenStruct.new(  # rubocop:disable Style/OpenStructUse
+    params = OpenStruct.new( # rubocop:disable Style/OpenStructUse
       project_key: 'SCRUM',
       issuetype_name: 'Task',
       gem: 'rubocop',
