@@ -21,4 +21,4 @@ gem 'tty-prompt'
 gem 'vcr'
 gem 'webmock'
 
-gem 'debug', '~> 1.3'
+gem 'debug'
