@@ -3,6 +3,7 @@
 
 AllCops:
   NewCops: enable
+  SuggestExtensions: true
   Exclude:
     - 'spec/fixtures/**/*'
     - 'vendor/**/*'
