@@ -10,7 +10,9 @@ gem 'awesome_print'
 gem 'aws-sdk-athena'
 gem 'aws-sdk-s3'
 gem 'flay'
-gem 'git-lint'
+# This is a cool gem but it has far too many
+# dependencies for my taste.
+# gem 'git-lint'
 gem 'google-api-client'
 gem 'rest-client'
 gem 'rspec'
