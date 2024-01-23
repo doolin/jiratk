@@ -5,11 +5,15 @@ require 'aws-sdk-s3'
 # Simple wrapper for AWS S3 API.
 class S3Tools
   def region
-    ENV.fetch('AWS_REGION', nil)
+    ENV.fetch('AWS_REGION', 'us-west-1')
   end
 
   def client(options = {})
+    Aws.config.update({
+                        credentials: Aws::SharedCredentials.new(profile_name: 'david_doolin')
+                      })
     options[:region] = region
+
     @client ||= Aws::S3::Client.new(options)
   end
 

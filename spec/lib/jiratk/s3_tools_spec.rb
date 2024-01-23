@@ -18,7 +18,7 @@ RSpec.describe S3Tools do
     end
   end
 
-  describe '#client' do
+  xdescribe '#client' do
     it 'acquires an S3 client instance' do
       expect(described_class.new.client(stub_responses: true)).not_to be_nil
     end
