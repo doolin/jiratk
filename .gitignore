@@ -4,3 +4,6 @@ application*.json
 copyt*.json
 *token.yaml
 .rspec_status
+
+# Burndown report processing
+index.html
