@@ -29,7 +29,7 @@ group :test do
 end
 gem 'rubocop'
 gem 'rubocop-rspec'
-gem 'runbook'
+gem 'runbook', github: 'doolin/runbook'
 gem 'tty-prompt'
 gem 'vcr'
 gem 'webmock'
