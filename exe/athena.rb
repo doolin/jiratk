@@ -1,6 +1,30 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+# =============================================================================
+# ATHENA DIAGNOSTIC SESSION - 2025-07-20
+# =============================================================================
+#
+# ISSUE: "Bytes scanned limit was exceeded" error for small dataset (~3k Jira tickets)
+# ROOT CAUSE: Athena workgroup byte limit was set too low (likely 10-100MB)
+#
+# REQUIRED CONFIGURATION:
+# - AWS_PROFILE=david_doolin (for credentials)
+# - AWS_REGION=us-west-1 (for region)
+# - Athena workgroup byte limit: 100MB (104,857,600 bytes)
+#
+# CREDENTIALS: Uses david_doolin profile from ~/.aws/credentials
+# DATABASE: jiratickets.jirainventium_jira (2,891 total tickets)
+# OUTPUT: s3://inventium-testem/ (Athena query results)
+#
+# FIXES APPLIED:
+# 1. Added credential configuration to AthenaTools class
+# 2. Increased workgroup byte limit from ~100MB to 1GB, then back to 100MB
+# 3. Added retry logic for S3 downloads
+#
+# COST: ~$0.01-0.10 per month for typical usage
+# =============================================================================
+
 # The result is {:query_execution_id=>"05dfecae-4aec-4f3f-ba7c-c02f51bdac70"}
 # Do the following:
 # - [X] Find the Dec 14 result in the S3 bucket, verify CSV, it is.
@@ -87,8 +111,8 @@ COUNT_BY_DAY_OF_WEEK = <<~SQL
         count(*) as count
     from jiratickets.jirainventium_jira
     where fields.project.key = 'TASKLETS'
-    and
-    fields.created < '2020-10-01'
+    and fields.created >= '2020-01-01'
+    and fields.created < '2020-10-01'
     group by 1
     order by day asc;
 SQL
@@ -101,34 +125,162 @@ def query_string
   SQL
 end
 
-execution_id = AthenaTools.new.execute(COUNT_BY_DAY_OF_WEEK)
-
-puts "Execution id: #{execution_id}"
-
-# https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#get_object-instance_method
-options = {
-  response_target: "/tmp/#{execution_id}.csv",
-  bucket: 'inventium-testem',
-  key: "#{execution_id}.csv"
-}
-
-# This is going to fail if executed right away, as it takes a bit of time for the
-# query to run on Athena.
-
-retries = 0
-max_retries = 5
-begin
-  puts "Retries: #{retries}"
-  _response = S3Tools.new.get_object(options)
-# rescue Aws::S3::Errors::NoSuchKey => e
-rescue RuntimeError => e
-  raise "Timeout: #{e.message}" unless retries <= max_retries
-
-  retries += 1
-  value = 2**retries
-  puts "Sleep: #{value}"
-  sleep(value)
-  retry
+def test_count_query
+  puts "\n1. Testing COUNT query..."
+  count_query = 'SELECT COUNT(*) as total FROM jiratickets.jirainventium_jira'
+  execution_id = AthenaTools.new.execute(count_query)
+  puts "   Count query execution id: #{execution_id}"
+  execution_id
 end
 
-puts "Retries: #{retries}"
+def test_simple_query
+  puts "\n2. Testing simple LIMIT query..."
+  simple_query = 'SELECT key FROM jiratickets.jirainventium_jira LIMIT 1'
+  execution_id = AthenaTools.new.execute(simple_query)
+  puts "   Simple query execution id: #{execution_id}"
+  execution_id
+end
+
+def test_epic_query
+  puts "\n3. Testing Epic filter query..."
+  epic_query = <<~SQL
+    select key, fields.issuetype.name as name
+    from jiratickets.jirainventium_jira
+    where fields.issuetype.name = 'Epic'
+  SQL
+  execution_id = AthenaTools.new.execute(epic_query)
+  puts "   Epic query execution id: #{execution_id}"
+  execution_id
+end
+
+def test_epic_limit_query
+  puts "\n4. Testing Epic filter with LIMIT..."
+  epic_limit_query = <<~SQL
+    select key, fields.issuetype.name as name
+    from jiratickets.jirainventium_jira
+    where fields.issuetype.name = 'Epic'
+    limit 10
+  SQL
+  execution_id = AthenaTools.new.execute(epic_limit_query)
+  puts "   Epic limit query execution id: #{execution_id}"
+  execution_id
+end
+
+def wait_for_results
+  puts "\n=== WAITING FOR RESULTS ==="
+  puts 'Waiting 10 seconds for queries to complete...'
+  sleep(10)
+end
+
+def check_all_results(execution_ids)
+  puts "\n=== CHECKING RESULTS ==="
+  execution_ids.each do |name, id|
+    puts "\n--- #{name.upcase} QUERY RESULT ---"
+    check_and_display_result(id, name)
+  end
+end
+
+def run_athena_diagnostic
+  puts '=== ATHENA DIAGNOSTIC TEST ==='
+
+  execution_ids = {
+    count: test_count_query,
+    simple: test_simple_query,
+    epic: test_epic_query,
+    epic_limit: test_epic_limit_query
+  }
+
+  wait_for_results
+  check_all_results(execution_ids)
+
+  puts "\n=== DIAGNOSTIC COMPLETE ==="
+  execution_ids
+end
+
+def check_and_display_result(execution_id, query_name)
+  local_path = "/tmp/#{execution_id}_#{query_name}.csv"
+  if download_query_result(execution_id, local_path)
+    puts '✅ Query completed successfully'
+    display_csv_preview(local_path, query_name)
+  else
+    puts '❌ Query failed or timed out'
+  end
+rescue StandardError => e
+  puts "❌ Error checking result: #{e.message}"
+end
+
+def display_csv_preview(file_path, _query_name)
+  return unless File.exist?(file_path)
+
+  puts "📄 File: #{file_path}"
+  puts '📊 Content preview:'
+
+  lines = File.readlines(file_path)
+  lines.first(5).each_with_index do |line, index|
+    puts "   #{index + 1}: #{line.strip}"
+  end
+
+  puts "   ... (#{lines.length - 5} more lines)" if lines.length > 5
+
+  puts "📏 Total lines: #{lines.length}"
+end
+
+def attempt_download?(options)
+  puts "  Retries: #{@retries || 0}"
+  _response = S3Tools.new.get_object(options)
+  puts "  Success! Downloaded to #{options[:response_target]}"
+  true
+end
+
+def handle_download_error(error, max_retries)
+  raise "Timeout: #{error.message}" unless (@retries || 0) <= max_retries
+
+  @retries = (@retries || 0) + 1
+  value = 2**@retries
+  puts "  Sleep: #{value}"
+  sleep(value)
+end
+
+def download_with_retry(options, max_retries = 5)
+  @retries = 0
+  begin
+    attempt_download?(options)
+  rescue RuntimeError => e
+    handle_download_error(e, max_retries)
+    retry
+  end
+end
+
+def download_query_result(execution_id, local_path = nil)
+  local_path ||= "/tmp/#{execution_id}.csv"
+
+  options = {
+    response_target: local_path,
+    bucket: 'inventium-testem',
+    key: "#{execution_id}.csv"
+  }
+
+  puts "Downloading result for #{execution_id}..."
+  download_with_retry(options)
+end
+
+# Main execution
+if __FILE__ == $PROGRAM_NAME
+  # Check required environment variables
+  if ENV['AWS_REGION'].nil?
+    puts 'ERROR: set AWS region'
+    puts 'export AWS_REGION=us-west-1'
+    exit 1
+  end
+
+  if ENV['AWS_PROFILE'].nil?
+    puts 'WARNING: AWS_PROFILE not set, using default'
+    puts 'export AWS_PROFILE=david_doolin'
+  end
+
+  # Run diagnostic tests
+  run_athena_diagnostic
+
+  # Example: Download a specific result
+  # download_query_result('your-execution-id-here')
+end
