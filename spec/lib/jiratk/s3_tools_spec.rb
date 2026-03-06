@@ -9,7 +9,7 @@ RSpec.describe S3Tools do
       expect(described_class.new.region).to eq region
     end
 
-    xit 'raises if region not specified' do
+    it 'raises if region not specified', skip: 'ENV cleanup interferes with other specs' do
       ENV['AWS_REGION'] = nil
 
       expect do
@@ -18,7 +18,7 @@ RSpec.describe S3Tools do
     end
   end
 
-  xdescribe '#client' do
+  describe '#client', skip: 'requires AWS credentials' do
     it 'acquires an S3 client instance' do
       expect(described_class.new.client(stub_responses: true)).not_to be_nil
     end
