@@ -25,6 +25,7 @@ group :google, :default do
 end
 
 group :development do
+  gem 'bundler-audit', require: false
   gem 'debug'
   gem 'flay'
   gem 'rubocop'

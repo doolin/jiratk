@@ -15,7 +15,9 @@ Guidance for AI agents working in this repo.
 | Install deps | `bundle install` |
 | Tests | `bundle exec rspec` or `rake` (default task is spec) |
 | Lint | `bundle exec rubocop` |
-| Run an exe | `bundle exec exe/<name>` (e.g. `bundle exec exe/provision_s3`)
+| Security | `bundle exec bundle audit check` (after `bundle audit update`) |
+| Run an exe | `bundle exec exe/<name>` (e.g. `bundle exec exe/provision_s3`) |
+| Jira (MCP) | Atlassian Rovo MCP — configure per IDE; OAuth on first use |
 
 ## Conventions
 
@@ -54,5 +56,5 @@ When suggesting or writing commit messages, read this section and include the Ji
 
 ## Other
 
-- CI: `.github/workflows/` (PR title linter only). Semaphore disabled.
+- CI: `.github/workflows/ci.yml` (bundle audit, rspec, rubocop); PR title linter.
 - Specs use VCR/webmock (see `spec/cassettes/`). Keep API and env details out of committed secrets.
