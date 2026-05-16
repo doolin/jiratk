@@ -12,7 +12,7 @@ A Jira toolkit and specialist API wrapper for managing Jira issues: creating, qu
 
 ## Requirements
 
-- Ruby >= 3.2
+- Ruby >= 4.0
 
 ## Installation
 

@@ -120,14 +120,68 @@ Sanity checks after update:
 - If Ruby 4.0.1 introduces incompatibilities with specific gems, prefer
   to update or replace those gems rather than pinning Ruby back, unless
   there is a strong reason to stay on the 3.x series.
-- CI:
-  - GitHub Actions currently only runs a PR title linter workflow and
-    does not depend on a specific Ruby version.
-  - Semaphore CI runs on `ubuntu2004` and installs gems with `bundle`
-    but does not pin a Ruby version; ensure the Semaphore agents are
-    updated to provide Ruby 4.0.1 (or compatible 4.x) before relying
-    on this update in main.
+- CI: GitHub Actions PR title linter only. Semaphore removed (May 2026).
 - Once GEN-710 is complete, update this section with the final Ruby
   version, any gem constraints, CI details, and links to relevant Jira
   tickets.
+
+### 4. Maintenance round (May 2026)
+
+Routine dependency refresh on Ruby 4.0.1 ([GEN-720](https://doolin.atlassian.net/browse/GEN-720)).
+
+```bash
+bundle update
+bundle exec rspec
+bundle exec rubocop
+```
+
+Notable direct/transitive updates:
+
+| Gem | From | To |
+|-----|------|----|
+| activesupport | 8.1.2 | 8.1.3 |
+| addressable | 2.8.9 | 2.9.0 |
+| aws-partitions | 1.1222.0 | 1.1249.0 |
+| aws-sdk-athena | 1.117.0 | 1.119.0 |
+| aws-sdk-core | 3.243.0 | 3.247.0 |
+| aws-sdk-kms | 1.122.0 | 1.125.0 |
+| aws-sdk-s3 | 1.215.0 | 1.222.0 |
+| bigdecimal | 4.0.1 | 4.1.2 |
+| faraday | 2.14.1 | 2.14.2 |
+| flay | 2.14.2 | 2.14.4 |
+| http-cookie | 1.1.0 | 1.1.6 |
+| irb | 1.17.0 | 1.18.0 |
+| json | 2.19.0 | 2.19.5 |
+| jwt | 3.1.2 | 3.2.0 |
+| minitest | 6.0.2 | 6.0.6 |
+| parallel | 1.27.0 | 2.1.0 |
+| parser | 3.3.10.2 | 3.3.11.1 |
+| regexp_parser | 2.11.3 | 2.12.0 |
+| rubocop | 1.85.1 | 1.86.2 |
+| webmock | 3.26.1 | 3.26.2 |
+
+Left at constrained/latest-compatible versions (transitive pins):
+
+- `diff-lcs` 1.6.2 (rspec; latest 2.0.0)
+- `google-apis-core` 0.18.0 (google-api-client; latest 1.0.2)
+- `wisper` 2.0.1 (runbook; latest 3.0.0)
+- `unicode-display_width` 2.6.0 (rubocop; latest 3.2.0)
+
+Other changes:
+
+- Fixed `ApiHelper#post` error path: `res` → `result` (undefined
+  local on non-2xx responses).
+- `AGENTS.md`: Ruby requirement note updated to 4.0+.
+
+Sanity checks:
+
+- `bundle exec rspec`: 20 examples, 0 failures (10 pending).
+- `bundle exec rubocop`: 34 files, no offenses.
+
+Follow-ups (out of scope for this ticket):
+
+- Dedicated agent Jira project + local tooling (separate accounts/email
+  when management toil warrants it).
+- Migrate off deprecated `google-api-client`.
+- CI: re-enable Semaphore or expand GitHub Actions when needed.
 
