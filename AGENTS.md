@@ -4,7 +4,7 @@ Guidance for AI agents working in this repo.
 
 ## Stack and layout
 
-- **Language**: Ruby 3.2+ (see `.ruby-version`).
+- **Language**: Ruby 4.0+ (see `.ruby-version`).
 - **Project type**: Gem; `lib/jiratk/` is the library, `exe/` holds executables.
 - **Config**: `jiratk.gemspec` for metadata and deps; `Gemfile` adds dev/test and optional groups (`:aws`, `:google`, `:test`). Runbook used for some automation (`Runbookfile`).
 
@@ -54,5 +54,5 @@ When suggesting or writing commit messages, read this section and include the Ji
 
 ## Other
 
-- CI: `.github/workflows/`; Semaphore config in `.semaphore/`.
+- CI: `.github/workflows/` (PR title linter only). Semaphore disabled.
 - Specs use VCR/webmock (see `spec/cassettes/`). Keep API and env details out of committed secrets.
