@@ -9,6 +9,8 @@ module JiraTk
     class Client
       BASE_URL = 'https://doolin.atlassian.net'
       DEFAULT_FIELDS = 'summary,status,issuetype,components,parent,description'
+      DEFAULT_ISSUETYPE = 'Task'
+      MARISU_COMMENT_PREFIX = '[Marisu] '
 
       def initialize(api_helper: nil, allowed_project: nil)
         @allowed_project = allowed_project || Jql::PROJECT
@@ -44,7 +46,68 @@ module JiraTk
         apply_transition(issue_key, match)
       end
 
+      def comment(issue_key, text:)
+        body_text = text.to_s.strip
+        raise Error, 'comment requires text' if body_text.empty?
+
+        key = IssueKey.validate!(issue_key)
+        url = "#{BASE_URL}/rest/api/3/issue/#{key}/comment"
+        payload = { body: adf_paragraph(marisu_comment_text(body_text)) }
+        response = @api.post(url, payload, debug: false)
+        parse_post_success!(response)
+      end
+
+      def comments(issue_key)
+        key = IssueKey.validate!(issue_key)
+        url = "#{BASE_URL}/rest/api/3/issue/#{key}/comment"
+        check_response!(parse(@api.get(url, {})))
+      end
+
+      def create(summary:, issuetype: DEFAULT_ISSUETYPE)
+        summary_text = summary.to_s.strip
+        raise Error, 'create requires --summary' if summary_text.empty?
+
+        payload = {
+          fields: {
+            project: { key: Jql::PROJECT },
+            issuetype: { name: issuetype },
+            summary: summary_text
+          }
+        }
+        response = @api.post("#{BASE_URL}/rest/api/3/issue", payload, debug: false)
+        parse_post_success!(response)
+      end
+
       private
+
+      def marisu_comment_text(text)
+        return text if text.start_with?(MARISU_COMMENT_PREFIX.strip)
+
+        "#{MARISU_COMMENT_PREFIX}#{text}"
+      end
+
+      def adf_paragraph(text)
+        {
+          type: 'doc',
+          version: 1,
+          content: [
+            {
+              type: 'paragraph',
+              content: [{ type: 'text', text: text }]
+            }
+          ]
+        }
+      end
+
+      def parse_post_success!(response)
+        code = response.code.to_i
+        raise Error, parse_post_error(response) unless (200..299).cover?(code)
+
+        body = response.body.to_s
+        return {} if body.empty?
+
+        check_response!(JSON.parse(body))
+      end
 
       def resolve_transition(issue_key, target)
         data = transitions(issue_key)
@@ -85,15 +148,15 @@ module JiraTk
 
       def parse_post_error(response)
         body = response.body.to_s
-        return "Transition failed (HTTP #{response.code})" if body.empty?
+        return "Request failed (HTTP #{response.code})" if body.empty?
 
         parsed = JSON.parse(body)
         messages = parsed['errorMessages']
         return messages.join('; ') if messages.is_a?(Array) && !messages.empty?
 
-        "Transition failed (HTTP #{response.code})"
+        "Request failed (HTTP #{response.code})"
       rescue JSON::ParserError
-        "Transition failed (HTTP #{response.code})"
+        "Request failed (HTTP #{response.code})"
       end
 
       def build_api(api_helper)
