@@ -4,7 +4,8 @@ require 'json'
 
 module JiraTk
   module Pah
-    # Jira read client for Marisu — PAH issues only.
+    # Jira client for Marisu — PAH issues only.
+    # rubocop:disable Metrics/ClassLength
     class Client
       BASE_URL = 'https://doolin.atlassian.net'
       DEFAULT_FIELDS = 'summary,status,issuetype,components,parent,description'
@@ -29,7 +30,71 @@ module JiraTk
         { 'jql' => scoped, 'issues' => fetch_search_issues(scoped, max_results, fields) }
       end
 
+      def transitions(issue_key)
+        key = IssueKey.validate!(issue_key)
+        url = "#{BASE_URL}/rest/api/3/issue/#{key}/transitions"
+        check_response!(parse(@api.get(url, {})))
+      end
+
+      def transition(issue_key, to:)
+        target = to.to_s.strip
+        raise Error, 'transition requires --to "<status name>"' if target.empty?
+
+        match = resolve_transition(issue_key, target)
+        apply_transition(issue_key, match)
+      end
+
       private
+
+      def resolve_transition(issue_key, target)
+        data = transitions(issue_key)
+        list = data['transitions'] || []
+        match = find_transition(list, target)
+        raise Error, unavailable_transition_message(target, list) unless match
+
+        match
+      end
+
+      def apply_transition(issue_key, match)
+        key = IssueKey.validate!(issue_key)
+        url = "#{BASE_URL}/rest/api/3/issue/#{key}/transitions"
+        payload = { transition: { id: match['id'] } }
+        response = @api.post(url, payload, debug: false)
+        check_transition_response!(response, key, match)
+      end
+
+      def find_transition(list, name)
+        list.find { |t| t['name'].casecmp?(name) }
+      end
+
+      def unavailable_transition_message(name, list)
+        available = list.map { |t| t['name'] }.join(', ')
+        "No transition named #{name.inspect}. Available: #{available}"
+      end
+
+      def check_transition_response!(response, key, match)
+        code = response.code.to_i
+        raise Error, parse_post_error(response) unless (200..299).cover?(code)
+
+        {
+          'key' => key,
+          'transition' => match['name'],
+          'to' => match.dig('to', 'name')
+        }
+      end
+
+      def parse_post_error(response)
+        body = response.body.to_s
+        return "Transition failed (HTTP #{response.code})" if body.empty?
+
+        parsed = JSON.parse(body)
+        messages = parsed['errorMessages']
+        return messages.join('; ') if messages.is_a?(Array) && !messages.empty?
+
+        "Transition failed (HTTP #{response.code})"
+      rescue JSON::ParserError
+        "Transition failed (HTTP #{response.code})"
+      end
 
       def build_api(api_helper)
         return api_helper if api_helper
@@ -91,5 +156,6 @@ module JiraTk
         JSON.parse(response.body)
       end
     end
+    # rubocop:enable Metrics/ClassLength
   end
 end
