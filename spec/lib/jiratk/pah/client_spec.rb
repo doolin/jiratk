@@ -96,6 +96,47 @@ RSpec.describe JiraTk::Pah::Client do
     end
   end
 
+  describe '#comment' do
+    let(:comment_response) do
+      { 'id' => '10001', 'self' => 'https://doolin.atlassian.net/rest/api/3/issue/15199/comment/10001' }.to_json
+    end
+
+    it 'adds a comment to a PAH issue' do
+      allow(api).to receive(:post).and_return(double(code: 201, body: comment_response))
+
+      result = client.comment('PAH-4', text: 'Starting work')
+      expect(result['id']).to eq('10001')
+      expect(api).to have_received(:post).with(
+        'https://doolin.atlassian.net/rest/api/3/issue/PAH-4/comment',
+        {
+          body: {
+            type: 'doc',
+            version: 1,
+            content: [
+              {
+                type: 'paragraph',
+                content: [{ type: 'text', text: 'Starting work' }]
+              }
+            ]
+          }
+        },
+        debug: false
+      )
+    end
+
+    it 'rejects empty comment text' do
+      allow(api).to receive(:post)
+      expect { client.comment('PAH-4', text: '   ') }.to raise_error(JiraTk::Pah::Error, /requires text/)
+      expect(api).not_to have_received(:post)
+    end
+
+    it 'rejects GEN keys without calling the API' do
+      allow(api).to receive(:post)
+      expect { client.comment('GEN-1', text: 'nope') }.to raise_error(JiraTk::Pah::Error)
+      expect(api).not_to have_received(:post)
+    end
+  end
+
   describe 'allowed project' do
     it 'rejects non-PAH allowed_project' do
       expect { described_class.new(api_helper: api, allowed_project: 'GEN') }

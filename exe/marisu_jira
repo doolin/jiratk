@@ -29,6 +29,7 @@ HELP_TEXT = <<~USAGE
     marisu-jira search <jql fragment>
     marisu-jira transitions PAH-<number>
     marisu-jira transition PAH-<number> --to "<status name>"
+    marisu-jira comment PAH-<number> "<text>"
     marisu-jira help
 
   Reads:
@@ -44,6 +45,12 @@ HELP_TEXT = <<~USAGE
     When starting work on a ticket, move it to In Progress:
       marisu-jira transition PAH-4 --to "In Progress"
       marisu-jira get PAH-4
+
+  Comments:
+    comment   Add a plain-text comment to a PAH ticket (JSON with comment id).
+              Quote text with spaces or special characters.
+
+      marisu-jira comment PAH-4 "Starting work — intern explanation"
 
   Credentials: DOOLIN_JIRA_ID, DOOLIN_JIRA_API
 USAGE
@@ -67,6 +74,7 @@ module MarisuJiraCli
     when 'search' then cmd_search(argv[1..].join(' '))
     when 'transitions' then cmd_transitions(argv[1])
     when 'transition' then cmd_transition(argv[1..])
+    when 'comment' then cmd_comment(argv[1..])
     when '-h', '--help', 'help', nil then usage(0)
     else
       warn "unknown command: #{cmd}"
@@ -108,6 +116,16 @@ module MarisuJiraCli
     abort_usage 'transition requires --to "<status name>"' if to.empty?
 
     [key, to]
+  end
+
+  def cmd_comment(args)
+    key = args[0]
+    abort_usage 'comment requires PAH-<number> and text' if key.nil? || key.empty?
+
+    text = args[1..].join(' ').strip
+    abort_usage 'comment requires PAH-<number> and text' if text.empty?
+
+    puts JSON.pretty_generate(JiraTk::Pah::Client.new.comment(key, text: text))
   end
 
   def usage(exit_code = 0)

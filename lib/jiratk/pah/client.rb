@@ -44,7 +44,41 @@ module JiraTk
         apply_transition(issue_key, match)
       end
 
+      def comment(issue_key, text:)
+        body_text = text.to_s.strip
+        raise Error, 'comment requires text' if body_text.empty?
+
+        key = IssueKey.validate!(issue_key)
+        url = "#{BASE_URL}/rest/api/3/issue/#{key}/comment"
+        payload = { body: adf_paragraph(body_text) }
+        response = @api.post(url, payload, debug: false)
+        parse_post_success!(response)
+      end
+
       private
+
+      def adf_paragraph(text)
+        {
+          type: 'doc',
+          version: 1,
+          content: [
+            {
+              type: 'paragraph',
+              content: [{ type: 'text', text: text }]
+            }
+          ]
+        }
+      end
+
+      def parse_post_success!(response)
+        code = response.code.to_i
+        raise Error, parse_post_error(response) unless (200..299).cover?(code)
+
+        body = response.body.to_s
+        return {} if body.empty?
+
+        check_response!(JSON.parse(body))
+      end
 
       def resolve_transition(issue_key, target)
         data = transitions(issue_key)
@@ -85,15 +119,15 @@ module JiraTk
 
       def parse_post_error(response)
         body = response.body.to_s
-        return "Transition failed (HTTP #{response.code})" if body.empty?
+        return "Request failed (HTTP #{response.code})" if body.empty?
 
         parsed = JSON.parse(body)
         messages = parsed['errorMessages']
         return messages.join('; ') if messages.is_a?(Array) && !messages.empty?
 
-        "Transition failed (HTTP #{response.code})"
+        "Request failed (HTTP #{response.code})"
       rescue JSON::ParserError
-        "Transition failed (HTTP #{response.code})"
+        "Request failed (HTTP #{response.code})"
       end
 
       def build_api(api_helper)
