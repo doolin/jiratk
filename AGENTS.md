@@ -54,6 +54,8 @@ https://doolin.atlassian.net/browse/GEN-<number>
 
 When suggesting or writing commit messages, read this section and include the Jira URL.
 
+Ensure credit: Coauthored by Ron via <client> <model>
+
 ## Other
 
 - CI: `.github/workflows/ci.yml` (bundle audit, rspec, rubocop); PR title linter.

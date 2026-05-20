@@ -1,0 +1,79 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Resolve jiratk root when invoked via ~/scripts/bin symlink or bundle exec.
+# realpath: symlink from ~/scripts/bin must resolve to jiratk/exe/
+root = File.expand_path('..', File.dirname(File.realpath(__FILE__))) # rubocop:disable Style/Dir
+$LOAD_PATH.unshift(File.join(root, 'lib')) unless $LOAD_PATH.include?(File.join(root, 'lib'))
+
+# Marisu only needs rest-client — not the full jiratk Gemfile (AWS, Google, etc.).
+require 'bundler/inline'
+gemfile do
+  source 'https://rubygems.org'
+  gem 'rest-client', '~> 2.1'
+end
+
+require 'json'
+require 'jiratk/account_manager'
+require 'jiratk/api_helper'
+require 'jiratk/pah/error'
+require 'jiratk/pah/issue_key'
+require 'jiratk/pah/jql'
+require 'jiratk/pah/client'
+
+# PAH-only Jira CLI for Marisu (reads).
+module MarisuJiraCli
+  module_function
+
+  def run(argv)
+    dispatch(argv)
+  rescue JiraTk::Pah::Error => e
+    warn e.message
+    exit 1
+  end
+
+  def dispatch(argv)
+    cmd = argv[0]
+    case cmd
+    when 'get' then cmd_get(argv[1])
+    when 'search' then cmd_search(argv[1..].join(' '))
+    when '-h', '--help', 'help', nil then usage(0)
+    else
+      warn "unknown command: #{cmd}"
+      usage(1)
+    end
+  end
+
+  def cmd_get(key)
+    abort_usage 'get requires PAH-<number>' if key.nil? || key.empty?
+
+    puts JSON.pretty_generate(JiraTk::Pah::Client.new.get(key))
+  end
+
+  def cmd_search(jql)
+    result = JiraTk::Pah::Client.new.search(jql.to_s)
+    puts JSON.pretty_generate(result)
+  end
+
+  def usage(exit_code = 0)
+    warn <<~USAGE
+      marisu-jira — PAH-only Jira reads for Marisu
+
+      Usage:
+        marisu-jira get PAH-<number>
+        marisu-jira search <jql fragment>
+        marisu-jira help
+
+      Search JQL is scoped to project = PAH automatically.
+      Credentials: DOOLIN_JIRA_ID, DOOLIN_JIRA_API
+    USAGE
+    exit exit_code
+  end
+
+  def abort_usage(message)
+    warn message
+    usage(1)
+  end
+end
+
+MarisuJiraCli.run(ARGV) if $PROGRAM_NAME == __FILE__

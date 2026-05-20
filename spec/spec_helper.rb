@@ -2,9 +2,8 @@
 
 require 'vcr'
 
-Dir[File.join(File.dirname(__FILE__), '..', 'lib', 'jiratk', '**.rb')].each do |f|
-  require f
-end
+lib_root = File.expand_path('../lib/jiratk', __dir__)
+Dir[File.join(lib_root, '**', '*.rb')].each { |f| require f }
 
 VCR.configure do |config|
   config.cassette_library_dir = 'spec/cassettes'

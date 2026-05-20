@@ -37,6 +37,7 @@ From the project root (or via `bundle exec`):
 | `copy_to_new_spreadsheet` | Copy data to a new Google Sheet |
 | `gem_update` | Update gem dependencies |
 | `provision_s3` | Provision S3 resources |
+| `marisu_jira` | PAH-only Jira reads for Marisu agent |
 | `provision_templates` | Provision Jira templates |
 
 ## Development
