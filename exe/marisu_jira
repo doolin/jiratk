@@ -29,12 +29,15 @@ HELP_TEXT = <<~USAGE
     marisu-jira search <jql fragment>
     marisu-jira transitions PAH-<number>
     marisu-jira transition PAH-<number> --to "<status name>"
+    marisu-jira comments PAH-<number>
     marisu-jira comment PAH-<number> "<text>"
+    marisu-jira create --summary "<text>"
     marisu-jira help
 
   Reads:
     get       Fetch one PAH issue (JSON).
     search    Search PAH; JQL is scoped to project = PAH automatically.
+    comments  List comments on a PAH ticket (JSON).
 
   Transitions:
     transitions   List allowed status changes for a ticket (JSON). Run this
@@ -47,10 +50,17 @@ HELP_TEXT = <<~USAGE
       marisu-jira get PAH-4
 
   Comments:
-    comment   Add a plain-text comment to a PAH ticket (JSON with comment id).
-              Quote text with spaces or special characters.
+    comment   Add a plain-text comment (JSON with comment id). Text is
+              prefixed with [Marisu] automatically for audit trail.
+    comments  Read comments back after writing.
 
       marisu-jira comment PAH-4 "Starting work — intern explanation"
+      marisu-jira comments PAH-4
+
+  Create:
+    create    Open a new PAH Task (always project PAH; no override).
+
+      marisu-jira create --summary "Investigate serial buffer flush"
 
   Credentials: DOOLIN_JIRA_ID, DOOLIN_JIRA_API
 USAGE
@@ -66,7 +76,7 @@ module MarisuJiraCli
     exit 1
   end
 
-  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize, Metrics/CyclomaticComplexity
   def dispatch(argv)
     cmd = argv[0]
     case cmd
@@ -74,14 +84,16 @@ module MarisuJiraCli
     when 'search' then cmd_search(argv[1..].join(' '))
     when 'transitions' then cmd_transitions(argv[1])
     when 'transition' then cmd_transition(argv[1..])
+    when 'comments' then cmd_comments(argv[1])
     when 'comment' then cmd_comment(argv[1..])
+    when 'create' then cmd_create(argv[1..])
     when '-h', '--help', 'help', nil then usage(0)
     else
       warn "unknown command: #{cmd}"
       usage(1)
     end
   end
-  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize, Metrics/CyclomaticComplexity
 
   def cmd_get(key)
     abort_usage 'get requires PAH-<number>' if key.nil? || key.empty?
@@ -118,6 +130,12 @@ module MarisuJiraCli
     [key, to]
   end
 
+  def cmd_comments(key)
+    abort_usage 'comments requires PAH-<number>' if key.nil? || key.empty?
+
+    puts JSON.pretty_generate(JiraTk::Pah::Client.new.comments(key))
+  end
+
   def cmd_comment(args)
     key = args[0]
     abort_usage 'comment requires PAH-<number> and text' if key.nil? || key.empty?
@@ -126,6 +144,21 @@ module MarisuJiraCli
     abort_usage 'comment requires PAH-<number> and text' if text.empty?
 
     puts JSON.pretty_generate(JiraTk::Pah::Client.new.comment(key, text: text))
+  end
+
+  def cmd_create(args)
+    summary = parse_summary_arg(args)
+    puts JSON.pretty_generate(JiraTk::Pah::Client.new.create(summary: summary))
+  end
+
+  def parse_summary_arg(args)
+    index = args.index('--summary')
+    abort_usage 'create requires --summary "<text>"' if index.nil?
+
+    summary = args[(index + 1)..].join(' ').strip
+    abort_usage 'create requires --summary "<text>"' if summary.empty?
+
+    summary
   end
 
   def usage(exit_code = 0)

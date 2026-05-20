@@ -115,11 +115,30 @@ RSpec.describe JiraTk::Pah::Client do
             content: [
               {
                 type: 'paragraph',
-                content: [{ type: 'text', text: 'Starting work' }]
+                content: [{ type: 'text', text: '[Marisu] Starting work' }]
               }
             ]
           }
         },
+        debug: false
+      )
+    end
+
+    it 'does not double-prefix Marisu comments' do
+      allow(api).to receive(:post).and_return(double(code: 201, body: comment_response))
+
+      client.comment('PAH-4', text: '[Marisu] already tagged')
+      expect(api).to have_received(:post).with(
+        anything,
+        hash_including(
+          body: hash_including(
+            content: [
+              hash_including(
+                content: [hash_including(text: '[Marisu] already tagged')]
+              )
+            ]
+          )
+        ),
         debug: false
       )
     end
@@ -133,6 +152,52 @@ RSpec.describe JiraTk::Pah::Client do
     it 'rejects GEN keys without calling the API' do
       allow(api).to receive(:post)
       expect { client.comment('GEN-1', text: 'nope') }.to raise_error(JiraTk::Pah::Error)
+      expect(api).not_to have_received(:post)
+    end
+  end
+
+  describe '#comments' do
+    it 'lists comments for a PAH issue' do
+      body = { 'comments' => [{ 'id' => '10001' }] }.to_json
+      allow(api).to receive(:get).and_return(api_response(body))
+
+      result = client.comments('PAH-4')
+      expect(result['comments'].first['id']).to eq('10001')
+    end
+
+    it 'rejects GEN keys without calling the API' do
+      allow(api).to receive(:get)
+      expect { client.comments('GEN-1') }.to raise_error(JiraTk::Pah::Error)
+      expect(api).not_to have_received(:get)
+    end
+  end
+
+  describe '#create' do
+    let(:create_response) do
+      { 'id' => '15200', 'key' => 'PAH-83', 'self' => 'https://doolin.atlassian.net/rest/api/3/issue/15200' }.to_json
+    end
+
+    it 'creates a PAH task' do
+      allow(api).to receive(:post).and_return(double(code: 201, body: create_response))
+
+      result = client.create(summary: 'New infra task')
+      expect(result['key']).to eq('PAH-83')
+      expect(api).to have_received(:post).with(
+        'https://doolin.atlassian.net/rest/api/3/issue',
+        {
+          fields: {
+            project: { key: 'PAH' },
+            issuetype: { name: 'Task' },
+            summary: 'New infra task'
+          }
+        },
+        debug: false
+      )
+    end
+
+    it 'rejects empty summary' do
+      allow(api).to receive(:post)
+      expect { client.create(summary: '  ') }.to raise_error(JiraTk::Pah::Error, /requires --summary/)
       expect(api).not_to have_received(:post)
     end
   end
