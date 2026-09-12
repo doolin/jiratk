@@ -57,6 +57,16 @@ Examples:
     Co-Authored by Karl via OpenCode with DeepSeek V4 Pro
     Co-Authored by Nick via Claude Code with Haiku 4.5
 
+### Commit messages
+
+Commit subjects are imperative, concise, and shaped for the log. Local
+repositories may require a ticket prefix, but the readable subject
+still matters.
+
+Commit bodies explain why the change exists. Hard-wrap body prose to
+55-65 characters per line. Structured trailers such as co-author lines
+may exceed that width when their required identity fields need it.
+
 ### Tooling discipline
 
 Prefer creating a reusable project tool over answering a repeated
@@ -78,4 +88,3 @@ Keep shell invocations simple enough to inspect. Avoid long `&&`
 chains that mix setup, mutation, verification, and reporting in one
 line; split the work into named scripts, make targets, or separate
 commands so failures have a clear boundary.
-
