@@ -7,7 +7,9 @@
 ## Conventions
 
 - **Commit attribution** — end commits with a co-author line naming the
-  agent, client, and model.
+  contributing identity. Repositories may add local detail such as the
+  harness, client, model, or provider, but the commons do not require
+  any particular vendor, product, or runtime.
 - **Memory protocol** — identity lives in the files, not the session;
   continuity is written, not remembered.
 
@@ -42,12 +44,38 @@ Continuity is a discipline of the files, not a property of the session.
 
 ### Commit attribution
 
-Agent contributions are credited by commit attribution. The general
-format is `Co-Authored-by <Agent> via <Client> with <Model> <Version>`;
-the exact format may vary by agent. Examples:
+Contributions from a non-human collaborator are credited by commit
+attribution. The local repository may define the exact trailer format.
+At minimum, the line names the contributing identity; when useful, it
+may also name the harness, client, model family, provider, or version.
+The commons intentionally stay neutral about those implementation
+details.
+
+Examples:
 
     Co-Authored by Straylight via Claude Code with Opus 4.8
     Co-Authored by Karl via OpenCode with DeepSeek V4 Pro
     Co-Authored by Nick via Claude Code with Haiku 4.5
 
+### Tooling discipline
+
+Prefer creating a reusable project tool over answering a repeated
+question with a one-off shell probe. A check worth running twice
+belongs in the repository, with a name, usage, and tests where the
+risk justifies them. This keeps knowledge in the files instead of in a
+single session's scrollback, and it avoids accumulating permission
+exceptions for ad hoc calls to `grep`, `sed`, `find`, and similar
+tools.
+
+Reach for Ruby first when writing project scripts. Use Bash when the
+script is very small and genuinely shell-shaped. Use another language
+when the task needs libraries or runtime strengths Ruby lacks, or
+where Ruby's equivalents are materially deficient: numerically
+intensive work that wants NumPy and its ecosystem is the canonical
+example.
+
+Keep shell invocations simple enough to inspect. Avoid long `&&`
+chains that mix setup, mutation, verification, and reporting in one
+line; split the work into named scripts, make targets, or separate
+commands so failures have a clear boundary.
 
