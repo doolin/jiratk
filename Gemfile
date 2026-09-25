@@ -22,6 +22,7 @@ end
 
 group :google, :default do
   gem 'google-api-client'
+  gem 'multi_json' # Required by the Google client's Representable JSON adapter.
 end
 
 group :development do
