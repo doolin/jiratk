@@ -10,6 +10,7 @@ RSpec.describe JiraTk::Permissions do
       require 'jiratk/permissions'
       abort 'Optional dependency loaded' if $LOADED_FEATURES.any? { |path| path.match?(/aws-sdk|googleauth|google-apis/) }
       abort 'Permission client unavailable' unless defined?(JiraTk::Permissions::Client)
+      abort 'Permission auditor unavailable' unless defined?(JiraTk::Permissions::Auditor)
     RUBY
   end
 

@@ -29,7 +29,7 @@ RSpec.describe JiraTk::Tickets::Client do
     it 'uses the configured origin and requests only ticket fields' do
       client.get('GEN-1')
 
-      expect(api).to have_received(:get).with(url, { fields: 'summary,status,parent,description,updated,project,issuetype,labels' })
+      expect(api).to have_received(:get).with(url, { fields: 'summary,status,parent,description,updated,project,issuetype,labels,subtasks' })
     end
 
     it 'omits unrequested response data' do

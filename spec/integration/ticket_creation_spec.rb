@@ -39,7 +39,7 @@ RSpec.describe 'Task creation command' do
     file.flush
     stub_search('issues' => [], 'isLast' => true)
     stub_request(:get, "#{base}/issue/GEN-1")
-      .with(query: { fields: 'summary,status,parent,description,updated,project,issuetype,labels' })
+      .with(query: { fields: 'summary,status,parent,description,updated,project,issuetype,labels,subtasks' })
       .to_return(status: 200, body: issue.to_json)
   end
 

@@ -36,7 +36,7 @@ From the project root (or via `bundle exec`):
 | `copy_from_template` | Copy issues from a template |
 | `copy_to_new_spreadsheet` | Copy data to a new Google Sheet |
 | `gem_update` | Update gem dependencies |
-| `jira_ticket` | Read tickets, create Tasks, and safely append description sections |
+| `jira_ticket` | Read tickets, create Tasks or Sub-tasks, and safely append description sections |
 | `provision_s3` | Provision S3 resources |
 | `marisu_jira` | PAH-only Jira reads for Marisu agent |
 | `provision_templates` | Provision Jira templates |
@@ -74,21 +74,37 @@ bundle exec exe/jira_ticket create-task GEN --summary "Improve ticket tooling" -
 ```
 
 Creation uses the existing `JiraTicket` payload builder and POST helper.
-It previews by default, creates only a standard Task, and reads it back to
-verify its project, type, summary, label and description. Choose a unique
-label for the work: a matching existing Task is a no-op; conflicting results
-or an incomplete label search stop creation.
+It previews by default and reads the result back to verify its project,
+type, parent, summary, label and description. Choose a unique label for
+the work: a matching existing ticket is a no-op; conflicting results or
+an incomplete label search stop creation.
+
+Omit `--parent` to create a standard Task. Supply it to create a Sub-task
+under a verified, same-project parent that is not itself a Sub-task:
+
+```sh
+bundle exec exe/jira_ticket create-task GEN --parent GEN-123 --summary "Audit project permissions" --label permission-audit --file task.txt
+```
+
+Review the preview and repeat with `--apply` to create the child. Ticket
+reads include `subtasks`, so `jira_ticket get GEN-123` also shows its children.
 
 The label check is not a transaction or uniqueness constraint. Jira search
 can lag behind recent writes, and concurrent creators can race. After an
 uncertain POST, inspect Jira before retrying; do not treat an empty search
 as proof that creation failed. No writes are automatically retried.
 
-## Permission discovery
+## Permission discovery and auditing
 
 The read-only `JiraTk::Permissions` library discovers project schemes,
 grants, identities, and memberships. See [permission discovery](docs/permission-discovery.md)
 for configuration boundaries, API usage, and completeness checks.
+
+`JiraTk::Permissions::Auditor` checks the six ticket permissions using a
+verified service account and the administrator's project inventory. Its
+text matrix and structured report preserve unknown results and compare
+positive and negative controls. See [permission auditing](docs/permission-audit.md)
+for the library interface, scope rules, and result statuses.
 
 ## Development
 

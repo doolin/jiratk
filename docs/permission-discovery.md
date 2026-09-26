@@ -2,8 +2,9 @@
 
 GEN-732 provides the foundation for the
 [permission management PRD](prds/jira-permission-scheme-management.md).
-It exposes reads only. Auditing the six-permission matrix, constructing
-mutation plans, and applying grants belong to subsequent subtasks.
+It exposes reads only. GEN-734 adds the
+[six-permission audit and control comparison](permission-audit.md).
+Constructing mutation plans and applying grants belong to subsequent subtasks.
 
 Load this API independently of optional AWS and Google dependencies:
 

@@ -47,7 +47,7 @@ RSpec.describe 'Ticket description command' do
 
   def stub_reads(*issues)
     stub_request(:get, url)
-      .with(query: { fields: 'summary,status,parent,description,updated,project,issuetype,labels' },
+      .with(query: { fields: 'summary,status,parent,description,updated,project,issuetype,labels,subtasks' },
             basic_auth: %w[synthetic-user synthetic-key])
       .to_return(*issues.map { |issue| { status: 200, body: JSON.generate(issue) } })
   end
@@ -78,7 +78,7 @@ RSpec.describe 'Ticket description command' do
 
   it 'rejects a redirect without sending credentials to its target' do
     stub_request(:get, url)
-      .with(query: { fields: 'summary,status,parent,description,updated,project,issuetype,labels' })
+      .with(query: { fields: 'summary,status,parent,description,updated,project,issuetype,labels,subtasks' })
       .to_return(status: 302, headers: { location: 'https://untrusted.test/' })
 
     expect(cli.run(args)).to eq(1)
@@ -89,7 +89,7 @@ RSpec.describe 'Ticket description command' do
 
   it 'reports an HTTP failure without printing the body or authentication values' do
     stub_request(:get, url)
-      .with(query: { fields: 'summary,status,parent,description,updated,project,issuetype,labels' })
+      .with(query: { fields: 'summary,status,parent,description,updated,project,issuetype,labels,subtasks' })
       .to_return(status: 403, body: '{"errorMessages":["do-not-display"]}')
 
     expect(cli.run(args)).to eq(1)
