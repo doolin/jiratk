@@ -173,6 +173,13 @@ Use the existing namespace and dependency-injection pattern:
 | `JiraTk::Permissions::Error` | Sanitized domain errors |
 | `exe/jira_permissions` | Thin CLI with standard-library argument parsing |
 
+The read-only implementation is delivered incrementally: GEN-732 provides
+[discovery](../permission-discovery.md), GEN-734 provides
+[auditing](../permission-audit.md), and GEN-735 provides
+[planning and saved-plan revalidation](../permission-plans.md) for the initial
+GEN/PAH ASSIGN repair. Execution and the executable remain later deliveries;
+the complete behavior specified below is still the target.
+
 Provide `lib/jiratk/permissions.rb` as the focused require entry point. Put
 implementation files under `lib/jiratk/permissions/` and specs under the
 corresponding `spec/lib/jiratk/permissions/` directory. Keep CLI behavior

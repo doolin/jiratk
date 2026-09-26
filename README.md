@@ -106,6 +106,12 @@ text matrix and structured report preserve unknown results and compare
 positive and negative controls. See [permission auditing](docs/permission-audit.md)
 for the library interface, scope rules, and result statuses.
 
+`JiraTk::Permissions::Planner` prepares a reviewable GEN/PAH assignment
+repair and revalidates its saved preconditions. See
+[permission plans](docs/permission-plans.md) for expected identities,
+ordered steps, JSON serialization, and drift checks. Planning is read-only;
+grant execution is a later deliverable.
+
 ## Development
 
 - Tests: `rspec`
