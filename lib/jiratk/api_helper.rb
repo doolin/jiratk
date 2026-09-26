@@ -10,16 +10,22 @@ class ApiHelper
     @password = password
   end
 
-  def get(url, params)
+  def inspect
+    "#<#{self.class}>"
+  end
+
+  def get(url, params, bearer_token: nil)
     resource = RestClient::Resource.new(
       url, user: @username, password: @password,
            max_redirects: 0, open_timeout: 10, read_timeout: 30
     )
 
-    resource.get(accept: :json, params:) do |resp, req, res, &block|
+    headers = { accept: :json, params: }
+    headers[:authorization] = "Bearer #{bearer_token}" if bearer_token
+    resource.get(headers) do |resp|
       return resp if (200..499).include? resp.code
 
-      resp.return!(req, res, &block)
+      resp.return!
     end
   end
 
