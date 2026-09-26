@@ -34,8 +34,11 @@ puts JSON.pretty_generate(report.to_h)
 report.exit_status
 ```
 
-Reports stay in memory until the caller writes them. This example prints
-text and JSON to standard output; the library creates no audit-results file.
+The auditor keeps reports in memory. This example prints text and JSON;
+it creates no file. The [permissions CLI](permission-cli.md) now persists
+every audit command's report through `Persistence`, defaulting to ignored
+repository-root `audit-results.md`. Its Markdown adapter and destination
+are replaceable without changing collection or comparison.
 
 The administrator factory uses existing private runtime configuration.
 The service endpoint, token, and expected immutable account ID come from
@@ -141,8 +144,9 @@ will succeed. Workflow and issue-security behavior require separate checks.
 The audit spans multiple requests and is not a transactional snapshot.
 Jira can change during collection. Evidence describes the observed results;
 later mutation operations must rediscover and revalidate their preconditions.
-This subtask provides no permission mutation methods or permission executable.
-It does not modify issues to probe access.
+Auditing does not mutate permissions or modify issues to probe access.
+The [permissions executable](permission-cli.md) exposes this audit API and
+the separately reviewed plan/execution workflow.
 
 Run `bundle exec rspec` and `bundle exec rubocop`. The tests exercise the real
 library and HTTP boundaries with synthetic data, including the GEN assignment
