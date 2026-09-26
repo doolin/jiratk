@@ -56,6 +56,12 @@ When suggesting or writing commit messages, read this section and include the Ji
 
 Ensure credit: Coauthored by Ron via <client> <model>
 
+## Delivery workflow
+
+When ticketed work is finished and all required local checks pass, stage
+the changes, commit, and open a pull request. Proceed without requesting
+another confirmation. Keep the work on its ticket-prefixed branch.
+
 ## Other
 
 - CI: `.github/workflows/ci.yml` (bundle audit, rspec, rubocop); PR title linter.
