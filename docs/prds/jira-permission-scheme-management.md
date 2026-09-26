@@ -177,8 +177,10 @@ The read-only implementation is delivered incrementally: GEN-732 provides
 [discovery](../permission-discovery.md), GEN-734 provides
 [auditing](../permission-audit.md), and GEN-735 provides
 [planning and saved-plan revalidation](../permission-plans.md) for the initial
-GEN/PAH ASSIGN repair. Execution and the executable remain later deliveries;
-the complete behavior specified below is still the target.
+GEN/PAH ASSIGN repair. GEN-737 adds [reviewed execution](../permission-execution.md)
+of that repair, with verified prefix resumption, bounded readback and failure
+evidence. The executable, audit persistence and broader isolation operations
+remain later deliveries; the complete behavior below is still the target.
 
 Provide `lib/jiratk/permissions.rb` as the focused require entry point. Put
 implementation files under `lib/jiratk/permissions/` and specs under the

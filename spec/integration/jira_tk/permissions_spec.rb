@@ -12,6 +12,7 @@ RSpec.describe JiraTk::Permissions do
       abort 'Permission client unavailable' unless defined?(JiraTk::Permissions::Client)
       abort 'Permission auditor unavailable' unless defined?(JiraTk::Permissions::Auditor)
       abort 'Permission planner unavailable' unless defined?(JiraTk::Permissions::Planner)
+      abort 'Permission executor unavailable' unless defined?(JiraTk::Permissions::Executor)
     RUBY
   end
 

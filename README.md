@@ -139,8 +139,13 @@ for the library interface, scope rules, and result statuses.
 `JiraTk::Permissions::Planner` prepares a reviewable GEN/PAH assignment
 repair and revalidates its saved preconditions. See
 [permission plans](docs/permission-plans.md) for expected identities,
-ordered steps, JSON serialization, and drift checks. Planning is read-only;
-grant execution is a later deliverable.
+ordered steps, JSON serialization, and drift checks. Planning is read-only.
+
+`JiraTk::Permissions::Executor` applies a reviewed plan with an explicit
+apply gate, fresh checks before each write, bounded readback, and verified
+resumption. See [permission execution](docs/permission-execution.md) for
+the interface, partial-failure evidence, and concurrency limitations.
+The permissions CLI and audit-result persistence remain later work.
 
 ## Development
 
