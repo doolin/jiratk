@@ -6,11 +6,14 @@ require 'digest'
 require_relative '../api_helper'
 require_relative '../account_manager'
 require_relative 'validation'
+require_relative 'grant_transport'
 
 module JiraTk
   module Permissions
-    # Read-only transport. Configuration is private; server links are never followed.
+    # Public discovery transport; grant writes are private to reviewed execution.
     class Connection
+      include GrantTransport
+
       def self.administrator(account_manager: AccountManager.new)
         keys = account_manager.api_keys
         username = Validation.credential(keys[:jira_id])

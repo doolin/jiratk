@@ -4,7 +4,8 @@
 for the initial GEN/PAH `ASSIGN_ISSUES` repair from the
 [permission-management PRD](prds/jira-permission-scheme-management.md).
 It produces data for review and can compare a saved plan against fresh
-discovery. No permission-writing methods or apply path are exposed.
+discovery. Planning remains read-only. [Reviewed execution](permission-execution.md)
+is available separately through an explicit apply boundary.
 
 ## Prepare and review
 
@@ -130,11 +131,11 @@ Membership changes, unrelated grants in the affected scheme, changed controls,
 identity changes, and project association changes invalidate the old plan.
 
 All reads span multiple requests; Jira can change between them. Revalidation
-narrows that uncertainty but supplies no lock or transaction. Execution must
-recheck at each write boundary. Partial-write reconciliation, resumption,
-bounded verification retries, the apply gate, and general isolation planning
-remain later work. The Markdown audit-persistence requirement is queued for
-the CLI/integration child.
+narrows that uncertainty but supplies no lock or transaction. The
+[executor](permission-execution.md) rechecks at each write boundary and
+reconciles valid completed prefixes without regenerating the plan. General
+isolation planning and the CLI, including Markdown audit persistence,
+remain later work.
 
 ## Verification
 
