@@ -48,7 +48,7 @@ class ApiHelper
   end
 
   def post(url, params, debug: true)
-    post_client(url, params).execute do |response, request, result, &block|
+    post_client(url, params).execute do |response|
       if debug
         puts "RESPONSE: #{response.code}"
         puts "RESPONSE BODY: #{response.body}"
@@ -56,7 +56,7 @@ class ApiHelper
 
       return response if (200..499).include? response.code
 
-      response.return!(request, result, &block)
+      response.return!
     end
   end
 end

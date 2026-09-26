@@ -10,6 +10,8 @@ module JiraTk
       USAGE = <<~TEXT
         Usage:
           jira_ticket get KEY
+          jira_ticket transitions KEY
+          jira_ticket transition KEY --to "STATUS NAME" [--apply]
           jira_ticket append-description KEY --heading TEXT --file PATH [--apply]
           jira_ticket create-task PROJECT --summary TEXT --label UNIQUE_LABEL --file PATH [--apply]
             [--parent KEY] creates a Sub-task under a verified parent in PROJECT.
@@ -19,6 +21,8 @@ module JiraTk
         The file contains plain text, with blank lines separating paragraphs.
         Creation previews by default and checks a unique label for duplicates.
         Search can lag behind writes: inspect uncertain creates before retrying.
+        Transitions preview by default; --to selects an exact destination name.
+        --apply rechecks the route and ticket, writes once, and verifies status.
       TEXT
 
       def initialize(client: nil, out: $stdout, err: $stderr)
@@ -54,10 +58,12 @@ module JiraTk
       def dispatch(args)
         command, key = args.shift(2)
         case command
-        when 'get'
+        when 'get', 'transitions'
           raise Error, USAGE unless key && args.empty?
 
-          client.get(key)
+          client.public_send(command, key)
+        when 'transition'
+          transition(key, args)
         when 'append-description'
           append_description(key, args)
         when 'create-task'
@@ -72,6 +78,17 @@ module JiraTk
         raise Error, USAGE unless key && args.empty? && options[:heading] && options[:file]
 
         client.append_description(key, text: read_text(options.delete(:file)), **options)
+      end
+
+      def transition(key, args)
+        options = { apply: false }
+        OptionParser.new do |parser|
+          parser.on('--to STATUS') { |value| options[:to] = value }
+          parser.on('--apply') { options[:apply] = true }
+        end.parse!(args)
+        raise Error, USAGE unless key && args.empty? && options[:to]
+
+        client.transition(key, **options)
       end
 
       def create_task(project, args)

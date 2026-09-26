@@ -66,6 +66,36 @@ the ticket before rerunning; the command does not automatically retry writes.
 
 The PAH-only `marisu_jira` command retains its project restriction.
 
+### Transition a ticket
+
+```sh
+bundle exec exe/jira_ticket transitions GEN-123
+bundle exec exe/jira_ticket transition GEN-123 --to "In Progress"
+bundle exec exe/jira_ticket transition GEN-123 --to "In Progress" --apply
+```
+
+`transitions` lists the verified current status, available transition IDs,
+their destination statuses, and required field names. `--to` matches the
+destination status name exactly, including case; a workflow action named
+"Finish work" may lead to the status "Done". An unavailable or ambiguous
+destination stops the operation. Transitions requiring field values must
+be completed in Jira; this command sends only a transition ID.
+
+Transitions preview by default in both the CLI and
+`JiraTk::Tickets::Client#transition`. Only `--apply` (library: `apply: true`)
+enables a write. Apply rechecks the selected route and ticket for drift,
+sends one POST, then reads back the exact destination ID and name. A ticket
+already at the requested status returns `unchanged` without a write.
+
+Jira's [transition API](https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issues/#api-rest-api-3-issue-issueidorkey-transitions-post)
+does not make the reads and write atomic. A concurrent change after the
+last check can still race with the POST. Workflow validators may reject a
+transition even when discovery lists it. A timeout, server error, or
+failed readback leaves the outcome uncertain: inspect the ticket before
+rerunning. The command never retries writes automatically. Its JSON result
+reports `dry-run`, `applied`, or `unchanged`; failures exit 1 with a sanitized
+message. Workflow post-functions still run as configured in Jira.
+
 ### Create a Task
 
 ```sh
