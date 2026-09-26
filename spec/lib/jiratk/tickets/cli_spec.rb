@@ -24,6 +24,22 @@ RSpec.describe JiraTk::Tickets::Cli do
     expect(JSON.parse(output.string)).to eq('key' => 'GEN-1')
   end
 
+  it 'lists available transitions' do
+    allow(client).to receive(:transitions).with('GEN-1').and_return('transitions' => [])
+
+    expect(cli.run(%w[transitions GEN-1])).to eq(0)
+    expect(JSON.parse(output.string)).to eq('transitions' => [])
+  end
+
+  [[], ['--apply']].each do |flags|
+    it 'passes a destination name and explicit apply intent' do
+      allow(client).to receive(:transition).and_return('status' => 'ok')
+
+      expect(cli.run(['transition', 'GEN-1', '--to', 'In Progress', *flags])).to eq(0)
+      expect(client).to have_received(:transition).with('GEN-1', to: 'In Progress', apply: flags.any?)
+    end
+  end
+
   it 'lazily builds the production client' do
     allow(JiraTk::Tickets::Client).to receive(:new).and_return(client)
     allow(client).to receive(:get).and_return({})
@@ -48,7 +64,10 @@ RSpec.describe JiraTk::Tickets::Cli do
   end
 
   [%w[unknown], %w[get], %w[get GEN-1 extra], %w[append-description],
-   %w[append-description GEN-1], %w[append-description GEN-1 --unknown]].each do |args|
+   %w[append-description GEN-1], %w[append-description GEN-1 --unknown],
+   %w[transitions], %w[transitions GEN-1 extra], %w[transition], %w[transition GEN-1],
+   %w[transition GEN-1 extra --to Done], %w[transition GEN-1 --to],
+   %w[transition GEN-1 --unknown]].each do |args|
     it 'rejects invalid command arguments' do
       expect(cli.run(args)).to eq(1)
       expect(errors.string).not_to be_empty

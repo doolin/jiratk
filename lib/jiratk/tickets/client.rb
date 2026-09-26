@@ -6,11 +6,14 @@ require_relative '../account_manager'
 require_relative '../api_helper'
 require_relative 'description'
 require_relative 'task'
+require_relative 'workflow'
 
 module JiraTk
   module Tickets
     # General ticket operations using JiraTK's existing authentication and HTTP helper.
     class Client
+      include Workflow
+
       FIELDS = %w[summary status parent description updated project issuetype labels subtasks].freeze
 
       def initialize(account_manager: AccountManager.new, api_helper: nil)
@@ -26,7 +29,7 @@ module JiraTk
         validate_issue!(issue, key)
         { 'key' => key, 'fields' => issue.fetch('fields').slice(*FIELDS) }
       rescue JSON::ParserError
-        raise Error, 'Ticket read returned invalid JSON'
+        raise Error, 'Ticket read returned invalid JSON', cause: nil
       end
 
       def append_description(key, heading:, text:, apply: false)
@@ -87,7 +90,7 @@ module JiraTk
       def request(method, path, payload, **options)
         @api.public_send(method, "#{@base_url}#{path}", payload, **options)
       rescue RestClient::Exception, SystemCallError, IOError, Timeout::Error, SocketError
-        raise Error, 'Jira request failed; outcome may be unknown, inspect before retrying'
+        raise Error, 'Jira request failed; outcome may be unknown, inspect before retrying', cause: nil
       end
 
       def existing_task(task)
@@ -121,7 +124,7 @@ module JiraTk
 
         body
       rescue JSON::ParserError
-        raise Error, 'Jira returned invalid JSON; inspect before retrying'
+        raise Error, 'Jira returned invalid JSON; inspect before retrying', cause: nil
       end
 
       def validate_issue!(issue, key)
