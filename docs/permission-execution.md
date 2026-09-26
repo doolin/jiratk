@@ -3,7 +3,8 @@
 [GEN-737](https://doolin.atlassian.net/browse/GEN-737) adds library execution
 of the initial GEN/PAH assignment repair. Prepare and review a plan using
 [permission planning](permission-plans.md), then supply that same plan to
-the executor. The CLI and audit-result persistence are later work.
+the executor. The [permissions CLI](permission-cli.md) now exposes this
+workflow and saves standalone audit reports.
 
 ```ruby
 require 'jiratk/permissions'

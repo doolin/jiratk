@@ -4,8 +4,9 @@ GEN-732 provides the foundation for the
 [permission management PRD](prds/jira-permission-scheme-management.md).
 It exposes reads only. GEN-734 adds the
 [six-permission audit and control comparison](permission-audit.md).
-GEN-735 adds [reviewable repair plans](permission-plans.md). Applying grants
-belongs to a subsequent subtask.
+GEN-735 adds [reviewable repair plans](permission-plans.md), GEN-737 adds
+[execution](permission-execution.md), and GEN-738 exposes the
+[permissions commands](permission-cli.md). Discovery itself is read-only.
 
 Load this API independently of optional AWS and Google dependencies:
 

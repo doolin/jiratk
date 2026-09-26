@@ -134,8 +134,8 @@ All reads span multiple requests; Jira can change between them. Revalidation
 narrows that uncertainty but supplies no lock or transaction. The
 [executor](permission-execution.md) rechecks at each write boundary and
 reconciles valid completed prefixes without regenerating the plan. General
-isolation planning and the CLI, including Markdown audit persistence,
-remain later work.
+isolation planning remains later work. The [permissions CLI](permission-cli.md)
+now exposes these plan operations and persists standalone audit reports.
 
 ## Verification
 

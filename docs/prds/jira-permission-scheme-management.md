@@ -179,8 +179,9 @@ The read-only implementation is delivered incrementally: GEN-732 provides
 [planning and saved-plan revalidation](../permission-plans.md) for the initial
 GEN/PAH ASSIGN repair. GEN-737 adds [reviewed execution](../permission-execution.md)
 of that repair, with verified prefix resumption, bounded readback and failure
-evidence. The executable, audit persistence and broader isolation operations
-remain later deliveries; the complete behavior below is still the target.
+evidence. GEN-738 adds the [executable and audit persistence](../permission-cli.md)
+for these existing operations. Broader isolation operations remain later work;
+the complete behavior below is still the target.
 
 Provide `lib/jiratk/permissions.rb` as the focused require entry point. Put
 implementation files under `lib/jiratk/permissions/` and specs under the
@@ -415,6 +416,20 @@ Render the six-column matrix in a stable order. Support structured JSON with
 the account ID, project coverage, requested permissions, results, comparison,
 and timestamp. Keep errors distinguishable from legitimate denials.
 
+The audit command saves every generated report by default to ignored
+repository-root `audit-results.md`, with a configurable destination. Save
+passed, mismatched and incomplete reports with their actual status, matrix,
+verified identity, timestamp, scope, coverage, mismatches and unknown/error
+categories. Persist only allowlisted report evidence.
+
+`Persistence#save(report)` delegates to an injected adapter. The initial
+Markdown file adapter owns rendering and atomic file replacement; keep
+Auditor and AuditReport independent of storage. A future adapter can replace
+file storage through the same interface; no database is included now. Failed
+writes preserve the previous report and are reported explicitly. The observed
+audit status remains visible independently of storage success; the command
+returns 2 on storage failure.
+
 Proposed process statuses:
 
 | Code | Meaning |
@@ -487,26 +502,25 @@ An idempotent rerun produces no mutations and the same successful controls.
 
 ## 12. CLI workflow
 
-The following is a proposed interface, not commands available in the current
-repository. Exact option spelling may be refined without weakening the gates.
+GEN-738 provides the following commands for the existing library operations.
+See the [command guide](../permission-cli.md) for required service configuration,
+immutable identities, broad-holder expectations, output paths and examples.
 
 ```text
 bundle exec exe/jira_permissions scheme --project PAH
 bundle exec exe/jira_permissions grants --scheme 10003 --permission ASSIGN_ISSUES
-bundle exec exe/jira_permissions audit --projects ADMIN,BST,DS,FIN,GEN,PAH,PLANT,SCRUM,TASKLETS
-bundle exec exe/jira_permissions plan --operation pah-assign-repair --output plan.json
-bundle exec exe/jira_permissions plan --operation pah-isolation --output plan.json
-bundle exec exe/jira_permissions execute --plan plan.json
-bundle exec exe/jira_permissions execute --plan plan.json --apply
+bundle exec exe/jira_permissions --help
 ```
 
-`execute` without `--apply` revalidates and displays the plan without writes.
-The audit command supports an explicit expectation such as PAH-only and a
-complete administrator-discovered inventory. Configuration selects the audit
-identity without passing credentials on the command line.
+`execute` without `--apply` revalidates and displays an execution preview without writes.
+The audit command uses the PAH-only expectation and defaults to the complete
+administrator-discovered inventory. Explicit project subsets remain incomplete.
+Configuration selects the audit identity without credentials on the command line.
+Planning currently supports only pah-assign-repair, with execution of that saved
+plan. Full isolation planning remains later work.
 
-Generic ensure-group, ensure-role, and delete-grant operations use the same
-planning and execution path. A delete requires the expected permission/holder
+Future generic ensure-group, ensure-role, and delete-grant operations must use
+the same planning and execution path. A delete requires the expected permission/holder
 and scheme context as well as the grant ID. Removing a broad grant requires
 declared replacements and verification controls. There is no force option that
 bypasses application-grant protection or failed preconditions.

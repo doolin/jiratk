@@ -37,6 +37,7 @@ From the project root (or via `bundle exec`):
 | `copy_to_new_spreadsheet` | Copy data to a new Google Sheet |
 | `gem_update` | Update gem dependencies |
 | `jira_ticket` | Read tickets, create Tasks or Sub-tasks, and safely append description sections |
+| `jira_permissions` | Inspect schemes, save permission audits, and review or execute repair plans |
 | `provision_s3` | Provision S3 resources |
 | `marisu_jira` | PAH-only Jira reads for Marisu agent |
 | `provision_templates` | Provision Jira templates |
@@ -126,7 +127,7 @@ as proof that creation failed. No writes are automatically retried.
 
 ## Permission discovery and auditing
 
-The read-only `JiraTk::Permissions` library discovers project schemes,
+The `JiraTk::Permissions` library discovers project schemes,
 grants, identities, and memberships. See [permission discovery](docs/permission-discovery.md)
 for configuration boundaries, API usage, and completeness checks.
 
@@ -145,7 +146,13 @@ ordered steps, JSON serialization, and drift checks. Planning is read-only.
 apply gate, fresh checks before each write, bounded readback, and verified
 resumption. See [permission execution](docs/permission-execution.md) for
 the interface, partial-failure evidence, and concurrency limitations.
-The permissions CLI and audit-result persistence remain later work.
+
+`bundle exec exe/jira_permissions --help` exposes discovery, auditing,
+planning, and execution through these same APIs. Audits save their actual
+results to ignored repository-root `audit-results.md` by default; the
+destination and persistence adapter are configurable. See the
+[permissions command guide](docs/permission-cli.md) for configuration,
+review/apply examples, file behavior, and exit codes.
 
 ## Development
 
