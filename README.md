@@ -84,6 +84,12 @@ can lag behind recent writes, and concurrent creators can race. After an
 uncertain POST, inspect Jira before retrying; do not treat an empty search
 as proof that creation failed. No writes are automatically retried.
 
+## Permission discovery
+
+The read-only `JiraTk::Permissions` library discovers project schemes,
+grants, identities, and memberships. See [permission discovery](docs/permission-discovery.md)
+for configuration boundaries, API usage, and completeness checks.
+
 ## Development
 
 - Tests: `rspec`
