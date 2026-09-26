@@ -35,6 +35,7 @@ end
 
 group :test do
   gem 'rspec'
+  gem 'simplecov', '~> 0.22.0', require: false
   gem 'vcr'
   gem 'webmock'
 end

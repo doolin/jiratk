@@ -80,6 +80,7 @@ GEM
       reline (>= 0.3.8)
     declarative (0.0.20)
     diff-lcs (1.6.2)
+    docile (1.4.1)
     domain_name (0.6.20260921)
     drb (2.2.3)
     erb (6.0.7)
@@ -246,6 +247,12 @@ GEM
       addressable (~> 2.8)
       faraday (>= 0.17.5, < 3.a)
       jwt (>= 1.5, < 4.0)
+    simplecov (0.22.0)
+      docile (~> 1.1)
+      simplecov-html (~> 0.11)
+      simplecov_json_formatter (~> 0.1)
+    simplecov-html (0.13.2)
+    simplecov_json_formatter (0.1.4)
     sshkit (1.25.1)
       base64
       logger
@@ -310,6 +317,7 @@ DEPENDENCIES
   rubocop
   rubocop-rspec
   runbook!
+  simplecov (~> 0.22.0)
   tsort
   tty-prompt
   vcr

@@ -1,6 +1,31 @@
 # frozen_string_literal: true
 
+require 'simplecov'
+
+SimpleCov.start do
+  enable_coverage :branch
+  use_merging false
+  track_files 'lib/**/*.rb'
+  add_filter '/spec/'
+  add_group('New code') { |file| file.filename.match?(%r{/lib/jiratk/(tickets|permissions)/}) }
+end
+
+SimpleCov.at_exit do
+  result = SimpleCov.result
+  result.format!
+  new_code = result.groups.fetch('New code')
+  puts "New code: #{new_code.covered_percent.round(2)}% lines, #{new_code.branch_covered_percent.round(2)}% branches"
+  incomplete = new_code.reject do |file|
+    file.covered_percent == 100 && file.branches_coverage_percent == 100
+  end
+  unless incomplete.empty?
+    warn "New code requires 100% line and branch coverage: #{incomplete.map(&:filename).join(', ')}"
+    exit 2
+  end
+end
+
 require 'vcr'
+require 'webmock/rspec'
 
 lib_root = File.expand_path('../lib/jiratk', __dir__)
 Dir[File.join(lib_root, '**', '*.rb')].each { |f| require f }
