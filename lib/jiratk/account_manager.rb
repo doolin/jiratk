@@ -4,6 +4,10 @@ require 'yaml'
 
 # Add class documentation
 class AccountManager
+  def jira_url
+    ENV.fetch('DOOLIN_JIRA_URL', nil)
+  end
+
   def api_keys
     @api_keys ||= {
       jira_id: ENV.fetch('DOOLIN_JIRA_ID', nil),

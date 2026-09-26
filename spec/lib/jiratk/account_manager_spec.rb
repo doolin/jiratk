@@ -1,6 +1,16 @@
 # frozen_string_literal: true
 
 RSpec.describe AccountManager do
+  subject(:account_manager) { described_class.new }
+
+  describe '#jira_url' do
+    it 'uses the configured Jira origin' do
+      allow(ENV).to receive(:fetch).with('DOOLIN_JIRA_URL', nil).and_return('https://example.atlassian.net')
+
+      expect(account_manager.jira_url).to eq('https://example.atlassian.net')
+    end
+  end
+
   it 'instantiates' do
     expect(described_class.new).not_to be_nil
   end
