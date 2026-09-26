@@ -12,6 +12,7 @@ module JiraTk
           jira_ticket get KEY
           jira_ticket append-description KEY --heading TEXT --file PATH [--apply]
           jira_ticket create-task PROJECT --summary TEXT --label UNIQUE_LABEL --file PATH [--apply]
+            [--parent KEY] creates a Sub-task under a verified parent in PROJECT.
 
         Append previews by default. --apply rechecks the ticket, writes only its
         description, and reads it back. Repeating an exact section is a no-op.
@@ -93,6 +94,7 @@ module JiraTk
           parser.on('--summary TEXT') { |value| options[:summary] = value }
           parser.on('--label LABEL') { |value| options[:label] = value }
           parser.on('--file PATH') { |value| options[:file] = value }
+          parser.on('--parent KEY') { |value| options[:parent] = value }
           parser.on('--apply') { options[:apply] = true }
         end.parse!(args)
         options

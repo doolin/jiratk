@@ -6,6 +6,7 @@ require_relative 'directory'
 require_relative 'pages'
 require_relative 'scheme'
 require_relative 'holder'
+require_relative 'permission_check'
 
 module JiraTk
   module Permissions
@@ -60,6 +61,10 @@ module JiraTk
       def project_scheme(key)
         data = object_get("/rest/api/3/project/#{Validation.project_key(key)}/permissionscheme")
         Scheme.new(client: self, data: data)
+      end
+
+      def my_permissions(project)
+        PermissionCheck.new(@connection).for_project(project)
       end
 
       def grants(scheme_id)

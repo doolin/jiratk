@@ -11,7 +11,7 @@ module JiraTk
   module Tickets
     # General ticket operations using JiraTK's existing authentication and HTTP helper.
     class Client
-      FIELDS = %w[summary status parent description updated project issuetype labels].freeze
+      FIELDS = %w[summary status parent description updated project issuetype labels subtasks].freeze
 
       def initialize(account_manager: AccountManager.new, api_helper: nil)
         @base_url = validated_url(account_manager.jira_url)
@@ -42,8 +42,9 @@ module JiraTk
         result(key, 'applied', proposed)
       end
 
-      def create_task(project, summary:, text:, label:, apply: false)
-        task = Task.new(project: project, summary: summary, text: text, label: label)
+      def create_task(project, apply: false, **attributes)
+        task = Task.new(project: project, **attributes)
+        verify_parent(task, project) if task.parent
         key = existing_task(task)
         return verified_task(key, task, 'unchanged') if key
         return { 'status' => 'dry-run', 'payload' => task.to_h } unless apply == true
@@ -56,6 +57,13 @@ module JiraTk
       end
 
       private
+
+      def verify_parent(task, project)
+        fields = get(task.parent)['fields']
+        valid = fields['project'].is_a?(Hash) && fields['project']['key'] == project &&
+                fields['issuetype'].is_a?(Hash) && fields['issuetype']['subtask'] == false
+        raise Error, 'Parent must be a verified non-subtask in the same project' unless valid
+      end
 
       def result(key, status, description)
         { 'key' => key, 'status' => status, 'description' => description }
